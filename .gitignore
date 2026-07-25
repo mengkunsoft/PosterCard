@@ -1,0 +1,23 @@
+# 依赖（本项目依赖已内置在 assets/vendor/，一般无需安装；若本地安装则忽略）
+node_modules/
+
+# npm 锁文件（本项目运行时依赖均已内置，仅构建用；如需 CI 可复现可改为提交）
+package-lock.json
+
+# 构建产物
+dist/
+build/
+*.log
+
+# 操作系统文件
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# 编辑器 / IDE
+.idea/
+.vscode/
+*.swp
+*~
+
+.codebuddy

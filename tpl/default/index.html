@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>default 模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== default 版式 ===== */
+    .pg-default {
+      background: #f6f7f8;
+      color: #20252a;
+      padding: 26px;
+      border-radius: 10px;
+      box-shadow: none;
+    }
+    .pg-header { padding: 0 0 18px; display: flex; align-items: center; }
+    .pg-content { padding: 0; display: flex; flex-direction: column; gap: 18px; }
+    .pg-title {
+      color: #20252a; font-size: 21px; line-height: 1.36; font-weight: 700;
+      text-align: left; overflow-wrap: anywhere;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-summary {
+      color: #545c64; font-size: 14px; line-height: 1.72; letter-spacing: 0;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3; overflow: hidden;
+    }
+    .pg-logo { max-width: 180px; height: 30px; width: auto; object-fit: contain; }
+    .pg-random {
+      width: 100%; display: flex; justify-content: center; position: relative;
+      aspect-ratio: 4 / 3; min-height: 200px; background: #e5e9ec;
+      border-radius: 10px; overflow: hidden;
+    }
+    .pg-random img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: 10px; }
+    .pg-date-badge {
+      position: absolute; right: 10px; bottom: 10px; background: rgba(27, 32, 37, 0.84);
+      color: #fff; border-radius: 6px; padding: 7px 9px;
+      box-shadow: 0 3px 14px rgba(0, 0, 0, 0.18); text-align: center; line-height: 1;
+      z-index: 2; pointer-events: none;
+    }
+    .pg-date-day { font-size: 22px; font-weight: 700; }
+    .pg-date-monthyear { margin-top: 4px; font-size: 11px; color: rgba(255, 255, 255, 0.82); }
+    .pg-qrcode { width: 140px; height: 140px; margin: 6px auto 0; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-default">
+    <div class="pg-header" data-pg-if="logo">
+      <img class="pg-logo" data-pg-img="logo" alt="logo"
+           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='30'%3E%3Crect width='180' height='30' rx='6' fill='%23286d8b'/%3E%3Ctext x='90' y='20' font-size='15' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3ELOGO%3C/text%3E%3C/svg%3E" />
+    </div>
+    <div class="pg-content">
+      <div class="pg-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+      <div class="pg-random">
+        <img data-pg-cover alt="cover"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23c9d6e8' offset='0'/%3E%3Cstop stop-color='%238fa6c4' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='800' height='600'/%3E%3C/svg%3E" />
+        <div class="pg-date-badge" data-pg-if="date" data-pg-date data-pg-date-variant="default">
+          <div class="pg-date-day" data-pg-date-day>16</div>
+          <div class="pg-date-monthyear" data-pg-date-monthyear>Jul.2026</div>
+        </div>
+      </div>
+      <div class="pg-summary" data-pg-if="summary" data-pg-text="summary | truncate:80">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</div>
+      <div class="pg-qrcode" data-pg-qr data-pg-qr-size="140"><span style="color:#bbb;font-size:12px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 可选：注册本模板的自定义扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'default';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: 'TEPoster',
+        helpers: {
+          // 示例扩展函数：给标题加前缀
+          // prefix: function (v, p) { return (p || '') + v; }
+        },
+        onRender: null
+      };
+    })();
+  </script>
+</body>
+</html>

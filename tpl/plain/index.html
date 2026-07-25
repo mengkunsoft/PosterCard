@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>plain（极简白）模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== plain（极简白）：大留白 + 细线 + 无衬线 ===== */
+    .pg-plain {
+      background: #fff; padding: 38px 34px 32px;
+      border-radius: 18px; border: 1px solid #f0f0f0;
+      display: flex; flex-direction: column; height: 100%; box-shadow: 0 2px 12px rgba(0,0,0,0.02);
+    }
+    .pg-plain .pl-tag {
+      font-size: 12px; font-weight: 600; letter-spacing: 0px;
+      text-transform: uppercase; color: #888; background: #f5f5f5;
+      padding: 4px 16px; border-radius: 16px;
+      align-self: flex-start; margin-bottom: 18px; flex-shrink: 0;
+    }
+    .pg-plain .pl-title {
+      font-size: 32px; font-weight: 600; color: #1a1a1a; line-height: 1.2;
+      margin:0 0 8px; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-plain .pl-desc {
+      font-size: 16px; color: #555; line-height: 1.7; margin-bottom: 24px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-plain .pl-foot {
+      border-top: 1px solid #eee; padding-top: 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-plain .pl-author { display: flex; align-items: center; gap: 8px; }
+    .pg-plain .pl-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-plain .pl-name { font-size: 14px; color: #1a1a1a; }
+    .pg-plain .pl-date { font-size: 12px; color: #999; }
+    .pg-plain .pl-qr {
+      flex: 0 0 54px; width: 54px; height: 54px; margin-left: auto;
+      background: #f8f8f8; border-radius: 6px; padding: 4px; overflow: hidden;
+    }
+    .pg-plain .pl-qr canvas, .pg-plain .pl-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-plain">
+    <span class="pl-tag" data-pg-if="siteName" data-pg-text="siteName">思考</span>
+    <h3 class="pl-title" data-pg-text="title">慢设计 · 快时代</h3>
+    <p class="pl-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">在效率至上的世界里，留白与克制反而成为最稀缺的品质。</p>
+    <div class="pl-foot">
+      <div class="pl-author" data-pg-if="author">
+        <img class="pl-avatar" data-pg-img="authorAvatar" alt="作者"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23dddddd'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23f5f5f5'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23f5f5f5'/%3E%3C/svg%3E" />
+        <div>
+          <div class="pl-name" data-pg-text="author">白 屿</div>
+          <div class="pl-date" data-pg-if="date" data-pg-text="date">2026.07.09</div>
+        </div>
+      </div>
+      <div class="pl-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#333333" data-pg-qr-bg="#f8f8f8"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'plain';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '极简白',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

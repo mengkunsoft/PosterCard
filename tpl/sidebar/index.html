@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sidebar（侧边栏）模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== sidebar（侧边栏）：垂直标签 + 半透明背景 ===== */
+    .pg-sidebar {
+      background: #fff; overflow: hidden;
+      border-left: 8px solid #2b5797;
+      display: flex; flex-direction: row; position: relative; height: 100%;
+      box-shadow: 0 8px 16px -6px rgba(0,0,0,0.04);
+    }
+    .pg-sidebar .sb-bg {
+      position: absolute; inset: 0; z-index: 0; opacity: 0.06;
+      background: linear-gradient(135deg, #c9d6e8, #8fa6c4); background-size: cover; background-position: center;
+    }
+    .pg-sidebar .sb-left {
+      flex: 0 0 32px; display: flex; flex-direction: column; align-items: center;
+      margin: 26px 0 26px 20px; position: relative; z-index: 1;
+    }
+    .pg-sidebar .sb-tag {
+      writing-mode: vertical-lr; text-orientation: mixed; font-size: 12px;
+      font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: #2b5797;
+      background: #eaf0fa; padding: 8px 4px; border-radius: 16px;
+      height: fit-content;
+    }
+    .pg-sidebar .sb-body {
+      flex: 1; padding: 26px 26px 26px 12px;
+      position: relative; z-index: 1; display: flex; flex-direction: column; min-height: 0;
+    }
+    .pg-sidebar .sb-title {
+      font-size: 32px; font-weight: 700; color: #0a1a2b; margin-bottom: 4px; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-sidebar .sb-desc {
+      font-size: 16px; color: #3d4d62; line-height: 1.6; margin-bottom: 16px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-sidebar .sb-foot {
+      border-top: 1px solid #e2e8f0; padding-top: 14px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-sidebar .sb-author { display: flex; align-items: center; gap: 8px; }
+    .pg-sidebar .sb-avatar {
+      width: 34px; height: 34px; border-radius: 8px;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-sidebar .sb-name { font-size: 14px; color: #1b2a3d; }
+    .pg-sidebar .sb-date { font-size: 12px; color: #8a93a0; }
+    .pg-sidebar .sb-qr {
+      flex: 0 0 54px; width: 54px; height: 54px; margin-left: auto;
+      background: #eaf0fa; border-radius: 6px; padding: 4px; overflow: hidden;
+    }
+    .pg-sidebar .sb-qr canvas, .pg-sidebar .sb-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-sidebar">
+    <div class="sb-bg" data-pg-cover></div>
+    <div class="sb-left"><span class="sb-tag" data-pg-if="siteName" data-pg-text="siteName">观点</span></div>
+    <div class="sb-body">
+      <h3 class="sb-title" data-pg-text="title">数字时代的注意力</h3>
+      <p class="sb-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">在碎片中重建深度阅读的习惯，一次关于专注力的反思。</p>
+      <div class="sb-foot">
+        <div class="sb-author" data-pg-if="author">
+          <img class="sb-avatar" data-pg-img="authorAvatar" alt="作者"
+               src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%232b5797'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23d6e2f5'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23d6e2f5'/%3E%3C/svg%3E" />
+          <div>
+            <div class="sb-name" data-pg-text="author">周 远</div>
+            <div class="sb-date" data-pg-if="date" data-pg-text="date">2026.07.12</div>
+          </div>
+        </div>
+        <div class="sb-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#2b5797" data-pg-qr-bg="#eaf0fa"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'sidebar';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '侧边栏',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

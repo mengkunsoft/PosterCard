@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dwqr1（风格1）模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      --notch-y: 550px;             /* 票根缺口 Y 坐标，由 onRender 动态计算 */
+      width: 400px;                 /* 固定宽度；与其它模板一致，内部用绝对 px、不随宽度缩放 */
+      height: 612px;                /* 固定高度（原 720:1100 设计在 400 下的高度，取整） */
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== dwqr1（风格1）版式：背景图 + 白色内卡 + 票根缺口 ===== */
+    .pg-dwqr1 {
+      background: url('theme_1.jpg') center center / 100% 100% no-repeat;
+      padding: 22px;
+      position: relative;
+    }
+    /* 票根缺口：分割线两侧的半圆镂空，透出背景图 */
+    .pg-dwqr1 .dwqr-notch {
+      position: absolute;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      /* 圆心对齐分割线中心（直接算 top，不用 transform，避免上移半个高度导致错位） */
+      top: calc(var(--notch-y, 550px) - 6px);
+      z-index: 2;
+      /* 透出底图：用与 root 同源、同尺寸、同位置的背景图，形成“镂空”效果 */
+      background-image: url('theme_1.jpg');
+      background-size: 400px 612px;
+      /* Y 两侧相同；X 需按各自左边缘单独设（见下），不能共用 */
+      background-position-y: calc(6px - var(--notch-y, 550px));
+      background-repeat: no-repeat;
+    }
+    /* 左缺口：左边缘在 16px → 背景左移 16px */
+    .pg-dwqr1 .dwqr-notch-l { left: 16px; background-position-x: -16px; }
+    /* 右缺口：左边缘在 400-16-12=372px → 背景左移 372px */
+    .pg-dwqr1 .dwqr-notch-r { right: 16px; background-position-x: -372px; }
+
+    /* 白色内卡：填满 root 减去 padding 的空间 */
+    .pg-dwqr1 .dwqr-card {
+      background: #fff;
+      border-radius: 6px;
+      padding: 24px 22px 22px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+    .pg-dwqr1 .dwqr-cover {
+      width: 100%; aspect-ratio: 3 / 2; overflow: hidden;
+      border-radius: 4px; background: #eef1f3;
+      flex-shrink: 0;
+    }
+    .pg-dwqr1 .dwqr-cover-img { width: 100%; height: 100%; background-image: linear-gradient(135deg,#c9d6e8,#8fa6c4); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    .pg-dwqr1 .dwqr-title {
+      margin-top: 18px; color: #1c1f1e; font-size: 22px; font-weight: 700; line-height: 1.34;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pg-dwqr1 .dwqr-summary {
+      margin-top: 10px; color: #545c64; font-size: 14px; line-height: 1.7;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+      flex-shrink: 0;
+    }
+    .pg-dwqr1 .dwqr-divider { margin: 16px -22px 14px; height: 1px; background: #ededed; flex-shrink: 0; }
+    /* 底部区域推到底部，保持与原版一致的底部位置 */
+    .pg-dwqr1 .dwqr-foot {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-top: auto;
+      flex-shrink: 0;
+    }
+    .pg-dwqr1 .dwqr-logo { max-height: 34px; max-width: 234px; object-fit: contain; }
+    .pg-dwqr1 .dwqr-qr {
+      flex: 0 0 72px; width: 72px; height: 72px; margin-left: 12px; padding: 4px;
+      background: #fff; border: 1px solid #eee; border-radius: 4px; overflow: hidden;
+    }
+    .pg-dwqr1 .dwqr-qr canvas, .pg-dwqr1 .dwqr-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-dwqr1">
+    <!-- 票根缺口：位于 root 层级以继承背景图 -->
+    <div class="dwqr-notch dwqr-notch-l"></div>
+    <div class="dwqr-notch dwqr-notch-r"></div>
+
+    <div class="dwqr-card">
+      <div class="dwqr-cover">
+        <div class="dwqr-cover-img" data-pg-cover></div>
+      </div>
+      <div class="dwqr-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+      <div class="dwqr-summary" data-pg-if="summary" data-pg-text="summary | truncate:120">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</div>
+      <div class="dwqr-divider"></div>
+      <div class="dwqr-foot">
+        <img class="dwqr-logo" data-pg-if="logo" data-pg-img="logo" alt="logo"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='44'%3E%3Crect width='180' height='44' rx='6' fill='%23286d8b'/%3E%3Ctext x='90' y='28' font-size='18' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3ELOGO%3C/text%3E%3C/svg%3E" />
+        <div class="dwqr-qr" data-pg-qr data-pg-qr-size="300"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'dwqr1';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      // 票根缺口 Y：取分割线中心相对 root 的纵向坐标。
+      // 用 getBoundingClientRect 计算，兼容任意嵌套/定位层级（旧的 offsetTop 累加在
+      // 离屏挂载、嵌套 flex 等场景下易算偏）；结果换算到 root 的 padding-box 坐标系，
+      // 与绝对定位 notch 的 top 同源；并补偿整体缩放（如预览 transform:scale）。
+      function computeNotchY(root) {
+        if (!root) return;
+        var divider = root.querySelector('.dwqr-divider');
+        if (!divider) return;
+        var rootRect = root.getBoundingClientRect();
+        var divRect = divider.getBoundingClientRect();
+        if (!rootRect.width || !divRect.height) return;
+        var scale = rootRect.width / (root.offsetWidth || rootRect.width);
+        var borderTop = root.clientTop || 0;   // border 外缘 -> padding 内缘
+        var y = (divRect.top - rootRect.top - borderTop + divRect.height / 2) / scale;
+        root.style.setProperty('--notch-y', y + 'px');
+      }
+
+      window.PosterCardTpl[name] = {
+        label: '闪电博-极光',
+        helpers: {},
+        // 固定 width:400px、内部绝对 px，不随宽度等比缩放（与其它模板一致）；
+        // 仅动态计算票根缺口的 Y 坐标（分割线中心位置），不再设置 --u。
+        onRender: function (root) {
+          computeNotchY(root);
+        }
+      };
+
+      // 独立打开本文件预览时（不走 PosterGenerator），onRender 不会被调用，兜底实测一次。
+      function measureNotch() { computeNotchY(document.querySelector('.pg-root')); }
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function () { requestAnimationFrame(measureNotch); });
+      } else {
+        requestAnimationFrame(measureNotch);
+      }
+    })();
+  </script>
+</body>
+</html>

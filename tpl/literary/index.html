@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>literary（文学）模板 · 预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== literary（文学）：大引号 + 留白 + 衬线 ===== */
+    .pg-literary {
+      background: #f6f4f0; border-radius: 22px 22px 22px 8px;
+      padding: 74px 34px 32px;
+      border: 1px solid #e8e2d8; position: relative; display: flex; flex-direction: column; height: 100%;
+      box-shadow: 0 4px 14px -6px rgba(0,0,0,0.04);
+    }
+    .pg-literary::before {
+      content: "“"; font-family: 'Playfair Display', serif; font-size: 100px;
+      color: #c9b8a4; position: absolute; top: 20px; left: -22px;
+      line-height: 1; opacity: 0.3;
+    }
+    .pg-literary .lt-tag {
+      font-size: 12px; background: transparent;
+      color: #7a6a58; border: 1px solid #d6cdc0; padding: 2px 16px;
+      border-radius: 22px; align-self: flex-start; margin-bottom: 20px;
+      letter-spacing: 1px; text-transform: uppercase; position: relative; z-index: 1; flex-shrink: 0;
+    }
+    .pg-literary .lt-title {
+      font-family: 'Playfair Display', serif; font-weight: 600; font-size: 36px;
+      line-height: 1.2; color: #2a241e; margin: 0 0 8px; font-style: italic; flex-shrink: 0;
+      position: relative; z-index: 1;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-literary .lt-desc {
+      font-size: 16px; line-height: 1.8; color: #4a3f35; margin-bottom: 24px;
+      border-left: 2px solid #d6cdc0; padding-left: 16px;
+      position: relative; z-index: 1;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-literary .lt-foot {
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+      position: relative; z-index: 1;
+    }
+    .pg-literary .lt-author { display: flex; align-items: center; gap: 8px; }
+    .pg-literary .lt-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-literary .lt-name { font-size: 16px; color: #2a241e; }
+    .pg-literary .lt-date { font-size: 12px; color: #8a7b6b; }
+    .pg-literary .lt-qr {
+      flex: 0 0 56px; width: 56px; height: 56px; margin-left: auto;
+      background: #fff; border-radius: 6px; border: 1px solid #e8e2d8;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.03); padding: 4px; overflow: hidden;
+    }
+    .pg-literary .lt-qr canvas, .pg-literary .lt-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-literary">
+    <span class="lt-tag" data-pg-if="siteName" data-pg-text="siteName">散文</span>
+    <h3 class="lt-title" data-pg-text="title">黄昏的图书馆</h3>
+    <p class="lt-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">书页间漏下的光线，是时间最温柔的刻度。</p>
+    <div class="lt-foot">
+      <div class="lt-author" data-pg-if="author">
+        <img class="lt-avatar" data-pg-img="authorAvatar" alt="作者"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23d6cdc0'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23f6f4f0'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23f6f4f0'/%3E%3C/svg%3E" />
+        <div>
+          <div class="lt-name" data-pg-text="author">苏 静</div>
+          <div class="lt-date" data-pg-if="date" data-pg-text="date">2026.07.10</div>
+        </div>
+      </div>
+      <div class="lt-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#4a3f35" data-pg-qr-bg="#ffffff"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'literary';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '文学',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

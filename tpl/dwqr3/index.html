@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dwqr3（风格3）模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;                 /* 固定宽度；与其它模板一致，内部用绝对 px、不随宽度缩放 */
+      height: 612px;                /* 固定高度（原 720:1100 设计在 400 下的高度，取整） */
+      position: relative;
+      box-sizing: border-box;
+      color: #111;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== dwqr3（风格3）版式：背景图铺满 + 内容直接叠加（无白卡、无摘要/分割线） ===== */
+    .pg-dwqr3 {
+      background: url('theme_3.png') center center / 100% 100% no-repeat;
+    }
+    /* 封面：距顶 112、左右留白 34，334 x 222（3:2） */
+    .pg-dwqr3 .dwqr-cover {
+      position: absolute;
+      left: 34px; top: 112px;
+      width: 334px; height: 222px;
+      overflow: hidden;
+    }
+    .pg-dwqr3 .dwqr-cover-img { width: 100%; height: 100%; background-image: linear-gradient(135deg,#c9d6e8,#8fa6c4); background-size: cover; background-position: center; background-repeat: no-repeat; }
+    /* 标题：灰色 #666、700 20px，距顶 356（封面底 334 + 22） */
+    .pg-dwqr3 .dwqr-title {
+      position: absolute;
+      left: 34px; top: 356px;
+      width: 334px;
+      color: #666; font-size: 20px; font-weight: 700;
+      line-height: 22px;
+      overflow-wrap: anywhere; display: -webkit-box; 
+      -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    /* 底部行：logo（左） + 二维码（右，x=282） */
+    .pg-dwqr3 .dwqr-bottom {
+      position: absolute;
+      left: 34px; right: 34px;
+      top: 462px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pg-dwqr3 .dwqr-logo { max-height: 56px; max-width: 222px; object-fit: contain; }
+    .pg-dwqr3 .dwqr-qr {
+      flex: 0 0 84px; width: 84px; height: 84px; padding: 4px;
+      background: #fff; border: 1px solid #eee; border-radius: 4px; overflow: hidden;
+    }
+    .pg-dwqr3 .dwqr-qr canvas, .pg-dwqr3 .dwqr-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-dwqr3">
+    <div class="dwqr-cover">
+      <div class="dwqr-cover-img" data-pg-cover></div>
+    </div>
+    <div class="dwqr-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+    <div class="dwqr-bottom">
+      <img class="dwqr-logo" data-pg-if="logo" data-pg-img="logo" alt="logo"
+           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='44'%3E%3Crect width='180' height='44' rx='6' fill='%23286d8b'/%3E%3Ctext x='90' y='28' font-size='18' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3ELOGO%3C/text%3E%3C/svg%3E" />
+      <div class="dwqr-qr" data-pg-qr data-pg-qr-size="240"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'dwqr3';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '闪电博-绿野仙踪',
+        helpers: {}
+        // 固定 width:400px、内部绝对 px，不随宽度等比缩放（与其它模板一致）；无需 onRender
+      };
+    })();
+  </script>
+</body>
+</html>

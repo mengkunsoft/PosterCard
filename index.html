@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PosterCard · 通用前端海报生成 Demo</title>
+  <link rel="stylesheet" href="postercard.css" />
+  <style>
+    :root { --brand: #286d8b; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      background: #f3f5f7;
+      color: #20252a;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; padding: 32px 20px 64px; }
+    h1 { font-size: 24px; margin: 0 0 6px; }
+    .sub { color: #6b727a; margin: 0 0 28px; font-size: 14px; }
+    .github-btns { margin-bottom: 12px; }
+
+    /* 布局：宽屏三列（字段 / 样式 / 预览在右）；中等两列（预览落到底部）；窄屏单列 */
+    .layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1.3fr;
+      gap: 16px;
+      align-items: start;
+    }
+    @media (max-width: 1180px) {
+      .layout { grid-template-columns: 1fr 1fr; }
+      .preview-card { grid-column: 1 / -1; }   /* 中等屏：预览占满整行，落到下方 */
+    }
+    @media (max-width: 760px) {
+      .layout { grid-template-columns: 1fr; }
+      .preview-card { grid-column: auto; }
+    }
+
+    .card { background: #fff; border: 1px solid #e4e8eb; border-radius: 12px; padding: 18px; }
+    .card h2 { margin: 0 0 14px; font-size: 15px; color: #3a4046; }
+    label { display: block; font-size: 13px; color: #5a626a; margin: 12px 0 6px; }
+    input, textarea, select {
+      width: 100%; padding: 9px 11px; border: 1px solid #d3d9dd; border-radius: 8px;
+      font-size: 14px; font-family: inherit; color: #20252a; background: #fff;
+    }
+    textarea { min-height: 72px; resize: vertical; }
+    .row { display: flex; gap: 12px; }
+    .row > div { flex: 1; }
+    .actions { margin-top: 16px; display: flex; gap: 12px; flex-wrap: wrap; }
+    button.gen {
+      border: 0; background: var(--brand); color: #fff; padding: 12px 20px;
+      border-radius: 8px; font-size: 15px; font-weight: 600; cursor: pointer;
+    }
+    button.gen:hover { background: #215c76; }
+    button.ghost {
+      border: 1px solid #cfd6da; background: #fff; color: #3a4046; padding: 12px 20px;
+      border-radius: 8px; font-size: 15px; cursor: pointer;
+    }
+    .hint { font-size: 12px; color: #8a9097; margin-top: 6px; line-height: 1.5; }
+    code { background: #eef1f3; padding: 1px 5px; border-radius: 4px; font-size: 12px; }
+    #code-out {
+      width: 100%; min-height: 230px; margin-top: 4px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px; line-height: 1.55; color: #20252a;
+      background: #f7f9fa; border: 1px solid #e4e8eb; border-radius: 8px;
+      padding: 12px 14px; resize: vertical; white-space: pre; overflow: auto;
+    }
+
+    .preview-card { position: sticky; top: 16px; }   /* 宽屏时预览跟随滚动 */
+    .code-card { margin-top: 16px; }   /* 与顶部模块(.layout)之间保留间距，避免紧贴 */
+    .preview-box {
+      margin-top: 12px; min-height: 120px; padding: 20px; border-radius: 12px;
+      background: #eceff1; display: flex; align-items: flex-start; justify-content: center;
+      overflow: auto;
+    }
+    .preview-box:empty::before {
+      content: "修改任意字段即可实时预览"; color: #9aa1a8; font-size: 13px; padding-top: 40px;
+    }
+    .preview-box .pg-root { box-shadow: 0 6px 16px rgba(0,0,0,0.15); }
+    /* 全部主题预览画廊 */
+    .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; margin-top: 14px; }
+    .gallery-item { background: #fff; border: 1px solid #e4e8eb; border-radius: 12px; padding: 10px; text-align: center; }
+    .gallery-item img { width: 100%; height: auto; border-radius: 8px; display: block; }
+    .gallery-cap { margin-top: 8px; font-size: 12px; color: #5a626a; word-break: break-all; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>PosterCard</h1>
+    <p class="sub">通用前端海报生成库 · 模板化（tpl/模板名/index.html）· 传入关键字段与样式参数即可生成分享海报（PNG）。</p>
+
+    <div class="github-btns">
+      <a class="github-button" target="_blank" href="https://github.com/mengkunsoft/PosterCard" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-star" data-size="large" aria-label="Star mengkunsoft/PosterCard on GitHub">Star</a>
+      <a class="github-button" target="_blank" href="https://github.com/mengkunsoft/PosterCard/fork" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-repo-forked" data-size="large" aria-label="Fork mengkunsoft/PosterCard on GitHub">Fork</a>
+      <a class="github-button" target="_blank" href="https://github.com/mengkunsoft/PosterCard/archive/HEAD.zip" data-color-scheme="no-preference: light; light: light; dark: dark;" data-icon="octicon-download" data-size="large" aria-label="Download mengkunsoft/PosterCard on GitHub">Download</a>
+    </div>
+
+    <div class="layout">
+      <div class="card">
+        <h2>关键字段（fields）</h2>
+        <label>标题 title</label>
+        <input id="f-title" value="如何用纯前端生成一个好看的分享海报" />
+        <label>摘要 summary</label>
+        <textarea id="f-summary">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</textarea>
+        <label>封面图 cover（URL）</label>
+        <input id="f-cover" placeholder="https://.../cover.jpg（留空用默认图）" />
+        <label>二维码内容 url</label>
+        <input id="f-url" value="https://example.com/article/123" />
+        <div class="row">
+          <div>
+            <label>站点名 siteName</label>
+            <input id="f-site" value="我的博客" />
+          </div>
+          <div>
+            <label>logo（URL，可选）</label>
+            <input id="f-logo" placeholder="https://.../logo.png" />
+          </div>
+        </div>
+        <div class="row">
+          <div>
+            <label>作者 author（可选）</label>
+            <input id="f-author" placeholder="作者名" />
+          </div>
+          <div>
+            <label>作者头像（可选）</label>
+            <input id="f-avatar" placeholder="https://.../avatar.png" />
+          </div>
+        </div>
+        <label>日期 date（ISO，可选）</label>
+        <input id="f-date" value="2026-07-16" />
+        <label>底部品牌描述 brandDesc</label>
+        <input id="f-desc" placeholder="记录与分享" />
+      </div>
+
+      <div class="card">
+        <h2>样式参数（style）</h2>
+        <label>版式 template</label>
+        <select id="s-template"><!-- 选项由 JS 根据 TEMPLATE_LIST 动态拉取 --></select>
+        <div class="row">
+          <div>
+            <label>海报宽度 width（px）</label>
+            <input id="s-width" type="number" value="400" />
+          </div>
+        </div>
+        <label>封面缺省图 defaultCover（可选）</label>
+        <input id="s-default" placeholder="https://.../default.jpg" />
+        <div class="hint">依赖 html2canvas 与 qrcode.js 需在页面中自行引入（见底部 &lt;script&gt;）。<br>
+          模板文件位于 <code>tpl/&lt;模板名&gt;/index.html</code>，可直接用浏览器打开预览。</div>
+        <div class="actions">
+          <button class="gen" id="btn-generate">生成海报</button>
+          <button class="ghost" id="btn-direct">直接生成不弹窗</button>
+        </div>
+      </div>
+
+      <div class="card preview-card">
+        <h2>模板预览（实时）</h2>
+        <div class="preview-box" id="preview-box"></div>
+        <div class="hint">修改任意字段/样式参数会实时重新渲染模板；封面、二维码按当前数据异步加载。生成时走同样流程并最终导出 PNG。</div>
+      </div>
+    </div>
+
+    <!-- 调用代码实时生成 -->
+    <div class="card code-card">
+      <h2>调用代码（实时）</h2>
+      <textarea id="code-out" readonly spellcheck="false" placeholder="修改上方任意字段/样式参数，这里会实时生成可复制的调用代码"></textarea>
+      <div class="actions">
+        <button class="ghost" id="btn-copy">复制代码</button>
+      </div>
+      <div class="hint">修改任意字段/样式参数，下方代码会实时同步，可直接复制到你的项目里调用 PosterCard.generate(...)。</div>
+    </div>
+
+    <!-- 一键预览所有主题 -->
+    <div class="card" style="margin-top:16px;">
+      <h2>一键预览所有主题</h2>
+      <div class="actions">
+        <button class="gen" id="btn-preview-all">生成全部主题预览</button>
+      </div>
+      <div class="hint">使用上方字段数据，为每一个版式生成海报并以图片网格展示（不弹窗）。</div>
+      <div id="all-themes-status" class="hint"></div>
+      <div id="all-themes-gallery" class="gallery"></div>
+    </div>
+  </div>
+
+  
+
+  <!-- 依赖需由调用方自行引入 -->
+  <script src="assets/vendor/html2canvas.min.js"></script>
+  <script src="assets/vendor/qrcode.min.js"></script>
+  <script src="postercard.js"></script>
+  <script>
+    /*
+     * ============================================================
+     *  Demo 配置说明（index.html 使用的全部配置项）
+     *  这些配置直接对应 PosterCard.generate(options) 的参数结构。
+     * ============================================================
+     *
+     *  options.fields（关键字段，决定海报内容）
+     *    title        : 标题（必填）
+     *    summary      : 摘要/正文（支持 truncate 扩展函数）
+     *    cover        : 封面图 URL（留空则用 defaultCover 或模板默认占位图）
+     *    url          : 二维码内容（文章链接等）
+     *    siteName     : 站点名（二维码旁的站点/作者名展示）
+     *    logo         : 站点 logo URL（可选，用于 favicon 展示）
+     *    author       : 作者名（可选，优先于 siteName 展示）
+     *    authorAvatar : 作者头像 URL（可选，作为圆形头像展示）
+     *    date         : 日期（ISO，如 2026-07-16；可选，用于日期模块）
+     *    brandDesc    : 底部品牌描述（部分模板使用；可选）
+     *
+     *  options.style（样式参数）
+     *    template     : 版式名，对应 tpl/<名>/index.html
+     *                   'default' | 'nicetheme' | 'netease' | 'minimal'
+     *    width        : 海报宽度 px（默认 400）
+     *    defaultCover : 封面缺省图 URL（可选，cover 为空且模板占位图也失败时回退）
+     *
+     *  options.output（输出控制）
+     *    showModal    : 是否弹出预览弹窗（true 弹窗 / false 直接下载）
+     *    filename     : 导出 PNG 文件名
+     * ============================================================
+     */
+
+    function val(id) { return document.getElementById(id).value.trim(); }
+
+    function buildOptions(showModal) {
+      return {
+        fields: {
+          title: val('f-title'),
+          summary: val('f-summary'),
+          cover: val('f-cover'),
+          url: val('f-url'),
+          siteName: val('f-site'),
+          logo: val('f-logo'),
+          author: val('f-author'),
+          authorAvatar: val('f-avatar'),
+          date: val('f-date'),
+          brandDesc: val('f-desc')
+        },
+        style: {
+          template: val('s-template'),
+          width: val('s-width') || 400,
+          defaultCover: val('s-default') || undefined
+        },
+        output: {
+          showModal: showModal,
+          filename: 'postercard-' + val('s-template') + '.png'
+        }
+      };
+    }
+
+    function collectFields() {
+      return {
+        title: val('f-title'), summary: val('f-summary'), cover: val('f-cover'), url: val('f-url'),
+        siteName: val('f-site'), logo: val('f-logo'), author: val('f-author'),
+        authorAvatar: val('f-avatar'), date: val('f-date'), brandDesc: val('f-desc')
+      };
+    }
+    function collectStyle() {
+      return {
+        template: val('s-template'), width: val('s-width') || 400,
+        defaultCover: val('s-default') || undefined
+      };
+    }
+
+    // ---- 实时生成调用代码 ----
+    function jsStr(s) {
+      if (s == null) return "''";
+      return "'" + String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '') + "'";
+    }
+    function buildGenerateCode() {
+      var fields = collectFields();
+      var style = collectStyle();
+      var order = ['title', 'summary', 'cover', 'url', 'siteName', 'logo', 'author', 'authorAvatar', 'date', 'brandDesc'];
+      var optional = { cover: 1, logo: 1, author: 1, authorAvatar: 1, date: 1, brandDesc: 1 };
+      var fLines = order.filter(function (k) { return !optional[k] || fields[k]; })
+        .map(function (k) { return '    ' + k + ': ' + jsStr(fields[k]); });
+      var sLines = ['    template: ' + jsStr(style.template), '    width: ' + (parseInt(style.width, 10) || 400)];
+      if (style.defaultCover) sLines.push('    defaultCover: ' + jsStr(style.defaultCover));
+      return 'PosterCard.generate({\n' +
+        '  fields: {\n' + fLines.join(',\n') + ',\n' +
+        '  },\n' +
+        '  style: {\n' + sLines.join(',\n') + '\n' +
+        '  }\n' +
+        '});';
+    }
+    var codeOut = document.getElementById('code-out');
+    function updateCode() { if (codeOut) codeOut.value = buildGenerateCode(); }
+
+    // ---- 配置持久化到 cookie（刷新后自动恢复）----
+    var CONFIG_COOKIE = 'postercard_demo_config';
+    function setCookie(name, value, days) {
+      var d = new Date();
+      d.setTime(d.getTime() + (days || 30) * 24 * 3600 * 1000);
+      document.cookie = name + '=' + encodeURIComponent(value) +
+        ';expires=' + d.toUTCString() + ';path=/';
+    }
+    function getCookie(name) {
+      var m = document.cookie.match(new RegExp('(?:^|; )' + name + '=([^;]*)'));
+      return m ? decodeURIComponent(m[1]) : null;
+    }
+    function saveConfig() {
+      var cfg = {};
+      Array.prototype.forEach.call(document.querySelectorAll('[id^="f-"],[id^="s-"]'), function (el) {
+        cfg[el.id] = el.value;
+      });
+      setCookie(CONFIG_COOKIE, JSON.stringify(cfg));
+    }
+    function loadConfig() {
+      var raw = getCookie(CONFIG_COOKIE);
+      if (!raw) return;
+      try {
+        var cfg = JSON.parse(raw);
+        Object.keys(cfg).forEach(function (id) {
+          var el = document.getElementById(id);
+          if (el && el.value !== undefined) el.value = cfg[id];
+        });
+      } catch (e) { /* 忽略损坏的 cookie */ }
+    }
+
+    document.getElementById('btn-generate').addEventListener('click', function () {
+      PosterCard.generate(buildOptions(true)).catch(function () {});
+    });
+
+    document.getElementById('btn-direct').addEventListener('click', function () {
+      PosterCard.generate(buildOptions(false)).then(function (res) {
+        res.download();
+      }).catch(function () {});
+    });
+
+    document.getElementById('btn-copy').addEventListener('click', function () {
+      var btn = this;
+      var text = codeOut ? codeOut.value : '';
+      if (!text) return;
+      function done() { btn.textContent = '已复制'; setTimeout(function () { btn.textContent = '复制代码'; }, 1200); }
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () {
+          codeOut.select(); document.execCommand('copy'); done();
+        });
+      } else {
+        codeOut.select(); document.execCommand('copy'); done();
+      }
+    });
+
+    // ---- 一键预览所有主题 ----
+    document.getElementById('btn-preview-all').addEventListener('click', buildAllThemesGallery);
+
+    function buildAllThemesGallery() {
+      var gallery = document.getElementById('all-themes-gallery');
+      var status = document.getElementById('all-themes-status');
+      if (!gallery || !status) return;
+      var total = TEMPLATE_LIST.length;
+      var done = 0;
+      gallery.innerHTML = '';
+      status.textContent = '生成中… (0/' + total + ')';
+      var fields = collectFields();
+      var width = parseInt(val('s-width'), 10) || 400;
+      var defaultCover = val('s-default') || undefined;
+      TEMPLATE_LIST.reduce(function (p, name) {
+        return p.then(function () {
+          return PosterCard.generate({
+            fields: fields,
+            style: { template: name, width: width, defaultCover: defaultCover },
+            output: { showModal: false, filename: 'postercard-' + name + '.png' }
+          }).then(function (res) {
+            done++;
+            status.textContent = '生成中… (' + done + '/' + total + ')';
+            var item = document.createElement('div');
+            item.className = 'gallery-item';
+            var img = document.createElement('img');
+            img.src = res.dataUrl; img.alt = name;
+            var cap = document.createElement('div');
+            cap.className = 'gallery-cap';
+            cap.textContent = name + '（' + (TEMPLATE_LABELS[name] || name) + '）';
+            item.appendChild(img); item.appendChild(cap);
+            gallery.appendChild(item);
+          }).catch(function (err) {
+            done++;
+            status.textContent = '生成中… (' + done + '/' + total + ')';
+            var item = document.createElement('div');
+            item.className = 'gallery-item';
+            item.textContent = name + '（' + (TEMPLATE_LABELS[name] || name) + '）：生成失败';
+            gallery.appendChild(item);
+          });
+        });
+      }, Promise.resolve()).then(function () {
+        status.textContent = '已全部生成（' + total + ' 个主题）。';
+      });
+    }
+
+    // ---- 实时预览 ----
+    var previewBox = document.getElementById('preview-box');
+    var previewStyleTag = null;
+    var previewToken = 0;   // 用于丢弃过期（被新输入覆盖）的渲染结果
+
+    function doPreview() {
+      var style = collectStyle();
+      var fields = collectFields();
+      var token = ++previewToken;
+      PosterCard.renderTemplate(style.template, fields, style, PosterCard.buildConfig({ style: style }))
+      .then(function (rendered) {
+        if (token !== previewToken) return;   // 已有更新的渲染，丢弃本次结果
+        if (previewStyleTag) previewStyleTag.remove();
+        previewStyleTag = rendered.styleTag;
+        previewBox.innerHTML = '';
+        previewBox.appendChild(rendered.root);
+      }).catch(function (err) {
+        if (token !== previewToken) return;
+        previewBox.textContent = '模板加载失败：' + (err && err.message ? err.message : err);
+      });
+    }
+
+    var previewTimer = null;
+    function schedulePreview() {
+      if (previewTimer) clearTimeout(previewTimer);
+      previewTimer = setTimeout(function () { saveConfig(); doPreview(); updateCode(); }, 250);   // 防抖，避免每次按键都触发渲染
+    }
+
+    // 监听所有字段与样式输入
+    var watched = document.querySelectorAll('[id^="f-"],[id^="s-"]');
+    Array.prototype.forEach.call(watched, function (el) {
+      el.addEventListener('input', schedulePreview);
+      el.addEventListener('change', schedulePreview);
+    });
+
+    // ---- 模板下拉：根据 TEMPLATE_LIST 动态拉取各模板显示名（label）----
+    var TEMPLATE_LIST = [
+      'default', 'nicetheme', 'netease', 'minimal',
+      'dwqr', 'dwqr1', 'dwqr2', 'dwqr3',
+      'newspaper', 'classic', 'collage', 'sidebar',
+      'literary', 'plain', 'dark', 'doodle'
+    ];
+    var TEMPLATE_LABELS = {};   // name -> 中文显示名（label），供画廊标题复用
+
+    function buildTemplateOptions() {
+      var sel = document.getElementById('s-template');
+      sel.innerHTML = '';
+      return Promise.all(TEMPLATE_LIST.map(function (name) {
+        return PosterCard.fetchTemplate(name).then(function (tpl) {
+          return { name: name, label: (tpl && tpl.label) || name };
+        }).catch(function () {
+          return { name: name, label: name };   // 拉取失败则回退为模板名
+        });
+      })).then(function (items) {
+        items.forEach(function (it) {
+          var opt = document.createElement('option');
+          opt.value = it.name;
+          opt.textContent = it.name + "（" + it.label + "）";
+          TEMPLATE_LABELS[it.name] = it.label;
+          sel.appendChild(opt);
+        });
+      });
+    }
+
+    // 首次加载：动态拉取模板列表填充下拉，再恢复配置并渲染一次
+    buildTemplateOptions().then(function () {
+      loadConfig();
+      doPreview();
+      updateCode();
+    });
+  </script>
+
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+</body>
+</html>

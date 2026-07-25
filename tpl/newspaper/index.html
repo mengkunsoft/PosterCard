@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>newspaper（经典报纸）模板 · 预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;                 /* 默认宽度；生成时由 style.width 覆盖 */
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== newspaper（经典报纸）：无封面、纯文字、衬线、顶部红条 ===== */
+    .pg-newspaper {
+      background: #fcf8f0;
+      padding: 36px 32px 32px;
+      border-radius: 0;
+      border-top: 6px solid #c0392b;
+      border-right: 1px solid #ddd6c8;
+      border-bottom: 1px solid #ddd6c8;
+      border-left: 1px solid #ddd6c8;
+      font-family: 'Times New Roman', 'Playfair Display', serif;
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .pg-newspaper .np-tag {
+      font-family: 'Inter', -apple-system, sans-serif;
+      font-size: 12px; letter-spacing: 0px;
+      text-transform: uppercase; color: #7f3f2a; background: #ede6d8;
+      padding: 4px 14px;
+      align-self: flex-start; margin-bottom: 20px; flex-shrink: 0;
+    }
+    .pg-newspaper .np-cover {
+      display: block; width: 100%; height: 200px; object-fit: cover;
+      margin-bottom: 14px; flex-shrink: 0;
+      border: 1px solid #ddd6c8; background: #eae3d6;
+      filter: grayscale(100%);
+    }
+    .pg-newspaper .np-title {
+      font-family: 'Playfair Display', serif; font-weight: 700;
+      font-size: 34px; line-height: 1.1; color: #2d1f14;
+      margin: 8px 0; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-newspaper .np-desc {
+      font-family: 'Times New Roman', serif; font-size: 16px;
+      line-height: 1.7; color: #3d3429; font-style: italic;
+      border-left: 4px solid #c0392b; padding-left: 14px;
+      margin-bottom: 20px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 5; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-newspaper .np-foot {
+      border-top: 1px dashed #b8aa96; padding-top: 14px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-newspaper .np-author { display: flex; align-items: center; gap: 8px; }
+    .pg-newspaper .np-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-newspaper .np-name { font-weight: 600; font-size: 14px; color: #2f2419; }
+    .pg-newspaper .np-date { font-size: 12px; color: #8a7b6b; }
+    .pg-newspaper .np-qr {
+      flex: 0 0 56px; width: 56px; height: 56px; margin-left: auto;
+      background: #fff; border-radius: 4px; padding: 4px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05); overflow: hidden;
+    }
+    .pg-newspaper .np-qr canvas, .pg-newspaper .np-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-newspaper">
+    <span class="np-tag" data-pg-if="siteName" data-pg-text="siteName">文化 · 专栏</span>
+    <img class="np-cover" data-pg-cover data-pg-if="cover" alt="封面"
+         src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='400'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23cfc6b4' offset='0'/%3E%3Cstop stop-color='%23a99c84' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='800' height='400'/%3E%3C/svg%3E" />
+    <h3 class="np-title" data-pg-text="title">街头摄影与城市记忆</h3>
+    <p class="np-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">“快门按下的瞬间，平凡的场景被赋予永恒的叙事。” 一次关于视觉人类学的漫步。</p>
+    <div class="np-foot">
+      <div class="np-author" data-pg-if="author">
+        <img class="np-avatar" data-pg-img="authorAvatar" alt="作者"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23b8aa96'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23f0ebe0'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23f0ebe0'/%3E%3C/svg%3E" />
+        <div>
+          <div class="np-name" data-pg-text="author">林 怀</div>
+          <div class="np-date" data-pg-if="date" data-pg-text="date">2026.07.16</div>
+        </div>
+      </div>
+      <div class="np-qr" data-pg-qr data-pg-qr-size="220"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'newspaper';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '经典报纸',
+        helpers: {},
+        // 封面图加载完成后用 canvas 将像素脱色为灰度，确保导出 PNG 也是黑白
+        // （html2canvas 1.4.1 不支持 CSS filter:grayscale，需在此处真实改写像素）
+        onRender: function (root) {
+          var img = root.querySelector('.np-cover');
+          if (!img) return;
+          function toGray() {
+            try {
+              var w = img.naturalWidth || 800, h = img.naturalHeight || 400;
+              var cv = document.createElement('canvas');
+              cv.width = w; cv.height = h;
+              var ctx = cv.getContext('2d');
+              ctx.drawImage(img, 0, 0, w, h);
+              var px = ctx.getImageData(0, 0, w, h), d = px.data;
+              for (var i = 0; i < d.length; i += 4) {
+                var g = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                d[i] = d[i + 1] = d[i + 2] = g;
+              }
+              ctx.putImageData(px, 0, 0);
+              img.src = cv.toDataURL('image/png');
+            } catch (e) { /* 跨域图片无法脱色时保持原色 */ }
+          }
+          if (img.complete && img.naturalWidth) toGray();
+          else img.addEventListener('load', toGray, { once: true });
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

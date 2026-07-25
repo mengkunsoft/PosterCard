@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>classic（经典卡片）模板 · 预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== classic（经典卡片）：顶部封面图 + 文字 ===== */
+    .pg-classic {
+      background: #fff;
+      border-radius: 12px;
+      overflow: hidden;
+      display: flex; flex-direction: column; height: 100%;
+      box-shadow: 0 6px 16px -4px rgba(0,0,0,0.06);
+    }
+    .pg-classic .hz-thumb {
+      width: 100%; height: 180px; overflow: hidden; flex-shrink: 0;
+      background: linear-gradient(135deg, #c9d6e8, #8fa6c4); background-size: cover; background-position: center;
+    }
+    .pg-classic .hz-body {
+      padding: 24px 26px 26px;
+      flex: 1 1 auto; display: flex; flex-direction: column; min-height: 0;
+    }
+    .pg-classic .hz-tag {
+      font-size: 12px; font-weight: 700; letter-spacing: 1px;
+      text-transform: uppercase; color: #3b6b8f; background: #eaf0f9;
+      padding: 4px 16px; border-radius: 16px;
+      align-self: flex-start; margin-bottom: 12px; flex-shrink: 0;
+    }
+    .pg-classic .hz-title {
+      font-size: 28px; font-weight: 700; color: #1a2636;
+      margin: 0 0 6px; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-classic .hz-desc {
+      font-size: 16px; color: #4d5a6b; line-height: 1.5; margin-bottom: 16px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-classic .hz-foot {
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-classic .hz-author { display: flex; align-items: center; gap: 8px; }
+    .pg-classic .hz-avatar {
+      width: 34px; height: 34px; border-radius: 50%;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-classic .hz-name { font-size: 14px; color: #1f2a3a; }
+    .pg-classic .hz-date { font-size: 12px; color: #8a93a0; }
+    .pg-classic .hz-qr {
+      flex: 0 0 54px; width: 54px; height: 54px; margin-left: auto;
+      background: #f0f4fa; border-radius: 6px; padding: 4px; overflow: hidden;
+    }
+    .pg-classic .hz-qr canvas, .pg-classic .hz-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-classic">
+    <div class="hz-thumb" data-pg-cover></div>
+    <div class="hz-body">
+      <span class="hz-tag" data-pg-if="siteName" data-pg-text="siteName">设计系统</span>
+      <h3 class="hz-title" data-pg-text="title">原子设计 · 迭代之路</h3>
+      <p class="hz-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">从最小元素到页面框架，构建可扩展的设计语言。</p>
+      <div class="hz-foot">
+        <div class="hz-author" data-pg-if="author">
+          <img class="hz-avatar" data-pg-img="authorAvatar" alt="作者"
+               src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23b3c2d6'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23eaf0f9'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23eaf0f9'/%3E%3C/svg%3E" />
+          <div>
+            <div class="hz-name" data-pg-text="author">陈 羽</div>
+            <div class="hz-date" data-pg-if="date" data-pg-text="date">2026.07.15</div>
+          </div>
+        </div>
+        <div class="hz-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#3b6b8f" data-pg-qr-bg="#f0f4fa"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'classic';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '经典卡片',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

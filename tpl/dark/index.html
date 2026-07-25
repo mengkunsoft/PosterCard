@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dark（暗黑科技）模板 · 预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== dark（暗黑科技）：封面底图 + 深色遮罩 + 霓虹点缀 + 等宽字体 ===== */
+    .pg-dark {
+      position: relative; overflow: hidden;
+      background: #0d1117; border-radius: 14px; padding: 36px 32px 32px;
+      border: 1px solid #2d333b; display: flex; flex-direction: column; height: 100%;
+      box-shadow: 0 12px 22px -6px rgba(0,0,0,0.6);
+    }
+    /* 封面底图层：由 data-pg-cover 注入背景图 */
+    .pg-dark .dk-cover {
+      position: absolute; inset: 0; z-index: 0;
+      background-size: cover; background-position: center; background-repeat: no-repeat;
+    }
+    /* 深色遮罩：保证文字在封面图上清晰可读 */
+    .pg-dark .dk-overlay {
+      position: absolute; inset: 0; z-index: 1;
+      background: linear-gradient(180deg,
+        rgba(13,17,23,0.55) 0%,
+        rgba(13,17,23,0.82) 55%,
+        rgba(13,17,23,0.92) 100%);
+    }
+    /* 内容层：浮于遮罩之上 */
+    .pg-dark .dk-content {
+      position: relative; z-index: 2; flex: 1 1 auto; min-height: 0;
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .pg-dark .dk-tag {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase; color: #58a6ff; background: rgba(88,166,255,0.08);
+      padding: 4px 14px; 
+      align-self: flex-start; margin-bottom: 16px; border-left: 2px solid #58a6ff; flex-shrink: 0;
+    }
+    .pg-dark .dk-title {
+      font-family: 'JetBrains Mono', monospace; font-size: 28px; font-weight: 600; color: #f0f6fc;
+      line-height: 1.2; margin: 10px 0 8px; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-dark .dk-desc {
+      font-size: 16px; color: #8b949e; line-height: 1.6; margin-bottom: 24px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-dark .dk-foot {
+      border-top: 1px solid #2d333b; padding-top: 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-dark .dk-author { display: flex; align-items: center; gap: 8px; }
+    .pg-dark .dk-avatar {
+      width: 34px; height: 34px; border-radius: 6px;
+      background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-dark .dk-name { font-size: 14px; color: #f0f6fc; }
+    .pg-dark .dk-date { font-size: 12px; color: #6e7681; }
+    .pg-dark .dk-qr {
+      flex: 0 0 54px; width: 54px; height: 54px; margin-left: auto;
+      background: #1c2128; border-radius: 4px; border: 1px solid #30363d; padding: 4px; overflow: hidden;
+    }
+    .pg-dark .dk-qr canvas, .pg-dark .dk-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-dark">
+    <!-- 封面底图（缺省/占位回退由库处理） -->
+    <div class="dk-cover" data-pg-cover></div>
+    <!-- 深色遮罩 -->
+    <div class="dk-overlay"></div>
+    <!-- 内容层 -->
+    <div class="dk-content">
+      <span class="dk-tag" data-pg-if="siteName" data-pg-text="siteName">前沿</span>
+      <h3 class="dk-title" data-pg-text="title">LLM 与交互新范式</h3>
+      <p class="dk-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">当语言模型成为界面，我们如何重新定义「对话」与「指令」？</p>
+      <div class="dk-foot">
+        <div class="dk-author" data-pg-if="author">
+          <img class="dk-avatar" data-pg-img="authorAvatar" alt="作者"
+               src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23303a4a'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%2358a6ff' opacity='0.3'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%2358a6ff' opacity='0.15'/%3E%3C/svg%3E" />
+          <div>
+            <div class="dk-name" data-pg-text="author">Dev. 陈</div>
+            <div class="dk-date" data-pg-if="date" data-pg-text="date">2026.07.08</div>
+          </div>
+        </div>
+        <div class="dk-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#58a6ff" data-pg-qr-bg="#1c2128"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'dark';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '暗黑科技',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

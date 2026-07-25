@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>doodle（手绘涂鸦）模板 · 预览</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      color: #111;
+      border-radius: 6px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== doodle（手绘/涂鸦风）：圆角 + 粗边框 + 俏皮字体 ===== */
+    .pg-doodle {
+      background: #fefcf5; padding: 32px 32px 26px;
+      border-radius: 38px 12px 38px 12px;
+      border: 2px solid #2d2a24; position: relative;
+      display: flex; flex-direction: column; height: 100%; box-shadow: 12px 12px 0 rgba(0,0,0,0.04);
+    }
+    .pg-doodle::after {
+      content: "✧"; position: absolute; bottom: 14px; right: 20px;
+      font-size: 26px; color: #e8b84b; opacity: 0.4;
+    }
+    .pg-doodle .do-tag {
+      font-family: 'Comic Sans MS', 'Inter', sans-serif; font-size: 12px; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase; color: #d97a3a; background: #f5ede4;
+      padding: 4px 18px; border-radius: 16px;
+      align-self: flex-start; margin-bottom: 14px; border: 2px dashed #2d2a24; flex-shrink: 0;
+    }
+    .pg-doodle .do-title {
+      font-family: 'DM Serif Display', serif; font-size: 34px; font-weight: 600; color: #2d2a24;
+      line-height: 1.1; margin: 10px 0 6px; flex-shrink: 0;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-doodle .do-desc {
+      font-size: 16px; color: #4a453c; line-height: 1.7; margin-bottom: 20px;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 6; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-doodle .do-foot {
+      border-top: 2px dashed #e0d6c8; padding-top: 14px;
+      display: flex; justify-content: space-between; align-items: center; margin-top: auto; flex-shrink: 0;
+    }
+    .pg-doodle .do-author { display: flex; align-items: center; gap: 8px; }
+    .pg-doodle .do-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 2px solid #2d2a24; background-size: cover; background-position: center; flex-shrink: 0;
+    }
+    .pg-doodle .do-name { font-size: 16px; color: #2d2a24; }
+    .pg-doodle .do-date { font-size: 12px; color: #8a7b6b; }
+    .pg-doodle .do-qr {
+      flex: 0 0 54px; width: 54px; height: 54px; margin-left: auto;
+      background: #fff; border-radius: 16px 4px 16px 4px;
+      border: 2px solid #2d2a24; transform: rotate(-2deg); padding: 4px; overflow: hidden;
+    }
+    .pg-doodle .do-qr canvas, .pg-doodle .do-qr img { display: block; width: 100% !important; height: 100% !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-doodle">
+    <span class="do-tag" data-pg-if="siteName" data-pg-text="siteName">涂鸦笔记</span>
+    <h3 class="do-title" data-pg-text="title">灵感的形状</h3>
+    <p class="do-desc" data-pg-if="summary" data-pg-text="summary | truncate:120">那些在笔记本角落生长出来的线条，往往是思考最真实的模样。</p>
+    <div class="do-foot">
+      <div class="do-author" data-pg-if="author">
+        <img class="do-avatar" data-pg-img="authorAvatar" alt="作者"
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23f5ede4' stroke='%232d2a24' stroke-width='2'/%3E%3Ccircle cx='50' cy='38' r='20' fill='%23e8d5c4'/%3E%3Cellipse cx='50' cy='70' rx='30' ry='20' fill='%23e8d5c4'/%3E%3C/svg%3E" />
+        <div>
+          <div class="do-name" data-pg-text="author">Momo 绘</div>
+          <div class="do-date" data-pg-if="date" data-pg-text="date">2026.07.07</div>
+        </div>
+      </div>
+      <div class="do-qr" data-pg-qr data-pg-qr-size="220" data-pg-qr-color="#2d2a24" data-pg-qr-bg="#ffffff"><span style="color:#bbb;font-size:6px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 注册本模板的扩展函数（生成时由库执行；独立打开时不依赖库） -->
+  <script>
+    (function () {
+      var name = 'doodle';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '手绘涂鸦',
+        helpers: {},
+      };
+    })();
+  </script>
+</body>
+</html>

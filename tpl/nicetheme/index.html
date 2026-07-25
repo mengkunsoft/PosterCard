@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>nicetheme 模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== nicetheme 版式 ===== */
+    .pg-nt {
+      background: #f5f6f7; color: #181c20; padding: 14px; border-radius: 12px;
+      box-shadow: none; letter-spacing: 0;
+    }
+    .pg-nt .nt-hero {
+      position: relative; aspect-ratio: 4 / 5; background-size: cover; background-position: center;
+      background-repeat: no-repeat; display: flex; align-items: flex-end;
+      border-radius: 10px; overflow: hidden;
+    }
+    .pg-nt .nt-hero-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 0; }
+    .pg-nt .nt-hero::before, .pg-nt .nt-hero::after {
+      content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 1;
+    }
+    .pg-nt .nt-hero::before {
+      background: linear-gradient(to top, rgba(8, 11, 14, 0.92) 0%, rgba(8, 11, 14, 0.74) 34%, rgba(8, 11, 14, 0.18) 67%, transparent 82%);
+    }
+    .pg-nt .nt-hero::after {
+      background: linear-gradient(150deg, rgba(8, 11, 14, 0.78) 0%, rgba(8, 11, 14, 0.38) 32%, transparent 62%);
+    }
+    .pg-nt .nt-date {
+      position: absolute; left: 24px; top: 22px; color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.86), 0 4px 18px rgba(0, 0, 0, 0.46); z-index: 2;
+    }
+    .pg-nt .nt-day { font-size: 52px; font-weight: 700; line-height: 1; }
+    .pg-nt .nt-monthyear { margin-top: 5px; font-size: 13px; font-weight: 600; letter-spacing: 0; }
+    .pg-nt .nt-hero-info {
+      width: 100%; padding: 32px 24px 26px; color: #fff;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9), 0 4px 18px rgba(0, 0, 0, 0.5); z-index: 2;
+    }
+    .pg-nt .nt-hero-info-bottom { align-self: stretch; position: relative; margin-top: auto; }
+    .pg-nt .nt-title {
+      font-size: 24px; font-weight: 700; line-height: 1.34; overflow-wrap: anywhere;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-nt .nt-summary {
+      margin-top: 12px; font-size: 14px; color: rgba(255, 255, 255, 0.9); line-height: 1.65;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-nt .nt-footer-white {
+      background: transparent; color: #181c20; padding: 18px 8px 4px;
+      display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 20px;
+      align-items: center; min-height: 98px;
+    }
+    .pg-nt .nt-footer-white.no-desc { align-items: center; }
+    .pg-nt .nt-brand-name { font-size: 26px; font-weight: 800; }
+    .pg-nt .nt-brand-desc {
+      margin-top: 7px; color: #697078; font-size: 13px; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-nt .nt-brand { min-width: 0; padding-right: 12px; }
+    .pg-nt .nt-qrcode { flex: 0 0 auto; background: #fff; }
+    .pg-nt .nt-brand-row { display: flex; align-items: center; gap: 10px; }
+    .pg-nt .nt-brand-logo { display: block; max-width: 180px; height: 34px; width: auto; object-fit: contain; }
+    .pg-nt .nt-brand-title { color: #20252a; font-size: 22px; font-weight: 700; line-height: 1.3; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-nt">
+    <div class="nt-hero">
+      <img class="nt-hero-img" data-pg-cover alt="cover"
+           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='1000'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23aeb6c2' offset='0'/%3E%3Cstop stop-color='%236b7280' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='800' height='1000'/%3E%3C/svg%3E" />
+      <div class="nt-date" data-pg-if="date" data-pg-date data-pg-date-variant="upper">
+        <div class="nt-day" data-pg-date-day>16</div>
+        <div class="nt-monthyear" data-pg-date-monthyear>JUL.2026</div>
+      </div>
+      <div class="nt-hero-info nt-hero-info-bottom">
+        <div class="nt-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+        <div class="nt-summary" data-pg-if="summary" data-pg-text="summary | truncate:90">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</div>
+      </div>
+    </div>
+    <div class="nt-footer-white">
+      <div class="nt-brand">
+        <div class="nt-brand-row">
+          <img class="nt-brand-logo" data-pg-img="logo" data-pg-if="logo" alt="logo"
+               src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='34'%3E%3Crect width='180' height='34' rx='6' fill='%23286d8b'/%3E%3Ctext x='90' y='22' font-size='16' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3ELOGO%3C/text%3E%3C/svg%3E" />
+          <div class="nt-brand-title" data-pg-if="!logo" data-pg-text="siteName">我的博客</div>
+        </div>
+        <div class="nt-brand-desc" data-pg-if="brandDesc" data-pg-text="brandDesc | truncate:40">记录与分享</div>
+      </div>
+      <div class="nt-qrcode" data-pg-qr data-pg-qr-size="75"><span style="color:#bbb;font-size:10px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 可选：注册本模板的自定义扩展函数 / onRender 钩子 -->
+  <script>
+    (function () {
+      var name = 'nicetheme';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: 'NiceTheme',
+        helpers: {},
+        // 无 brandDesc 时给 footer 加 no-desc 以优化对齐
+        onRender: function (root, data) {
+          var footer = root.querySelector('.nt-footer-white');
+          if (footer && !(data.brandDesc || '').trim()) footer.classList.add('no-desc');
+        }
+      };
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,36 @@
+{
+  "name": "postercard",
+  "version": "2.0.0",
+  "description": "通用前端海报/分享卡片生成库：模板化、纯前端，基于 HTML 模板 + 占位符渲染并导出高清 PNG（含二维码）。",
+  "main": "postercard.js",
+  "files": [
+    "postercard.js",
+    "postercard.css",
+    "tpl",
+    "assets"
+  ],
+  "keywords": [
+    "poster",
+    "share-card",
+    "share-image",
+    "og-image",
+    "html2canvas",
+    "qrcode",
+    "template",
+    "frontend"
+  ],
+  "author": "",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "build": "node build.js",
+    "start": "node serve.js"
+  },
+  "devDependencies": {
+    "clean-css": "^5.3.3",
+    "terser": "^5.31.0"
+  }
+}

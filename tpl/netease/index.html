@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>netease 模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== netease 版式 ===== */
+    .pg-netease {
+      background: #f4f6f7; color: #20242a; padding: 22px; border-radius: 0;
+      box-shadow: none; letter-spacing: 0;
+    }
+    .pg-netease .netease-image-wrap {
+      width: 100%; aspect-ratio: 4 / 3; position: relative; background: #dde2e6;
+      border-radius: 10px; overflow: hidden;
+    }
+    .pg-netease .netease-image-wrap img { width: 100%; height: 100%; object-fit: cover; display: block; border-radius: inherit; }
+    .pg-netease .netease-article-head { padding: 21px 4px 23px; }
+    .pg-netease .netease-title {
+      color: #20242a; font-size: 25px; font-weight: 700; line-height: 1.32; overflow-wrap: anywhere;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-netease .netease-author { margin-top: 10px; color: #717780; font-size: 13px; font-weight: 500; line-height: 1.4; }
+    .pg-netease .netease-middle {
+      display: grid; grid-template-columns: 72px minmax(0, 1fr); column-gap: 24px; align-items: center;
+      min-height: 132px; padding: 21px 4px 22px; border-top: 1px solid #d6dadd; border-bottom: 1px solid #d6dadd;
+    }
+    .pg-netease .netease-date-wrap {
+      min-width: 72px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+      text-align: center; font-variant-numeric: tabular-nums;
+    }
+    .pg-netease .netease-date-day { color: #30465f; font-size: 44px; font-weight: 600; line-height: 0.92; }
+    .pg-netease .netease-date-monthyear { margin-top: 9px; color: #858b92; font-size: 11px; font-weight: 600; line-height: 1; }
+    .pg-netease .netease-desc-wrap { flex: 1 1 auto; min-width: 0; }
+    .pg-netease .netease-desc {
+      color: #4d535b; font-size: 15px; font-weight: 400; line-height: 1.7; text-align: left;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-netease .netease-footer {
+      display: grid; grid-template-columns: minmax(0, 1fr) 80px; column-gap: 22px; align-items: center;
+      min-height: 112px; padding: 19px 4px 4px;
+    }
+    .pg-netease .netease-footer-left { flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 8px; }
+    .pg-netease .netease-brand-row { min-width: 0; display: flex; align-items: center; }
+    .pg-netease .netease-logo { display: block; max-width: 168px; height: 26px; width: auto; object-fit: contain; }
+    .pg-netease .netease-site-name {
+      flex: 1 1 auto; min-width: 0; overflow: hidden; color: #2c3137; font-size: 16px; font-weight: 700;
+      text-overflow: ellipsis; white-space: nowrap;
+    }
+    .pg-netease .netease-scan-text { max-width: 210px; color: #7b8189; font-size: 12px; line-height: 1.5; }
+    .pg-netease .netease-footer-right { width: 80px; height: 80px; display: flex; align-items: center; justify-content: center; }
+    .pg-netease .netease-qrcode { width: 80px; height: 80px; background: #fff; padding: 4px; box-shadow: none; }
+    .pg-netease .netease-qrcode canvas, .pg-netease .netease-qrcode img { display: block; width: 72px !important; height: 72px !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-netease">
+    <div class="netease-image-wrap">
+      <img data-pg-cover alt="cover"
+           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='600'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%23dde2e6' offset='0'/%3E%3Cstop stop-color='%23b9c2cb' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='800' height='600'/%3E%3C/svg%3E" />
+    </div>
+    <div class="netease-article-head">
+      <div class="netease-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+      <div class="netease-author" data-pg-if="author" data-pg-text="author | truncate:30">作者名</div>
+    </div>
+    <div class="netease-middle">
+      <div class="netease-date-wrap" data-pg-if="date" data-pg-date data-pg-date-variant="default">
+        <div class="netease-date-day" data-pg-date-day>16</div>
+        <div class="netease-date-monthyear" data-pg-date-monthyear>Jul.2026</div>
+      </div>
+      <div class="netease-desc-wrap" data-pg-if="summary">
+        <div class="netease-desc" data-pg-text="summary | truncate:120">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</div>
+      </div>
+    </div>
+    <div class="netease-footer">
+      <div class="netease-footer-left">
+        <div class="netease-brand-row">
+          <img class="netease-logo" data-pg-img="logo" data-pg-if="logo" alt="logo"
+               src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='168' height='26'%3E%3Crect width='168' height='26' rx='5' fill='%23286d8b'/%3E%3Ctext x='84' y='17' font-size='13' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3ELOGO%3C/text%3E%3C/svg%3E" />
+          <span class="netease-site-name" data-pg-if="!logo" data-pg-text="siteName">我的博客</span>
+        </div>
+        <div class="netease-scan-text">长按识别二维码，阅读全文</div>
+      </div>
+      <div class="netease-footer-right">
+        <div class="netease-qrcode" data-pg-qr data-pg-qr-size="72"><span style="color:#bbb;font-size:10px;">二维码</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 可选：注册本模板的自定义扩展函数 -->
+  <script>
+    (function () {
+      var name = 'netease';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '网易云',
+        helpers: {
+          // 示例扩展函数：把作者名包成「by xxx」
+          by: function (v) { return v ? 'by ' + v : ''; }
+        },
+        onRender: null
+      };
+    })();
+  </script>
+</body>
+</html>

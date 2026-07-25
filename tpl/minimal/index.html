@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>minimal 模板 · 预览</title>
+  <style>
+    /* ===== 基础（所有模板通用） ===== */
+    .pg-root {
+      width: 400px;
+      box-sizing: border-box;
+      background: #fff;
+      color: #111;
+      border-radius: 10px;
+      overflow: hidden;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+    }
+    .pg-root, .pg-root *, .pg-root *::before, .pg-root *::after { box-sizing: border-box; }
+
+    /* ===== minimal（深色卡片）版式 ===== */
+    .pg-minimal {
+      background: #1c1f1e; color: #f5f5f2; padding: 20px; border-radius: 10px; box-shadow: none;
+    }
+    .pg-minimal .minimal-cover {
+      width: 100%; aspect-ratio: 1 / 1; overflow: hidden; background: #2a2d2c;
+      border-radius: 10px;
+    }
+    .pg-minimal .minimal-cover img { display: block; width: 100%; height: 100%; object-fit: cover; }
+    .pg-minimal .minimal-copy { padding: 21px 3px 0; }
+    .pg-minimal .minimal-title {
+      color: #f5f5f2; font-size: 20px; font-weight: 650; line-height: 1.3; overflow-wrap: anywhere;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-minimal .minimal-summary {
+      min-height: 3.2em; margin-top: 12px; color: #b7bab7; font-size: 15px; line-height: 1.6;
+      overflow-wrap: anywhere; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .pg-minimal .minimal-footer {
+      min-width: 0; min-height: 56px; margin-top: 24px; padding: 0 3px 3px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pg-minimal .minimal-brand { flex: 1 1 auto; min-width: 0; display: flex; align-items: center; gap: 10px; }
+    .pg-minimal .minimal-favicon {
+      flex: 0 0 32px; width: 32px; height: 32px; padding: 2px; border-radius: 50%;
+      background: #eceeea; object-fit: contain;
+    }
+    .pg-minimal .minimal-favicon.is-avatar { padding: 0; border-radius: 50%; object-fit: cover; }
+    .pg-minimal .minimal-site-name {
+      flex: 1 1 auto; min-width: 0; overflow: hidden; color: #f0f1ee; font-size: 16px;
+      font-weight: 650; line-height: 1.25; text-overflow: ellipsis; white-space: nowrap;
+    }
+    .pg-minimal .minimal-qrcode {
+      flex: 0 0 56px; width: 56px; height: 56px; margin-left: 14px; padding: 6px;
+      overflow: hidden; background: #f5f5f2;
+    }
+    .pg-minimal .minimal-qrcode canvas, .pg-minimal .minimal-qrcode img { display: block; width: 44px !important; height: 44px !important; }
+  </style>
+</head>
+<body>
+  <!-- 直接打开本文件即可预览；生成时由 PosterGenerator 替换占位符 -->
+  <div class="pg-root pg-minimal">
+    <div class="minimal-cover">
+      <img data-pg-cover alt="cover"
+           src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='800' height='800'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%233a3f3d' offset='0'/%3E%3Cstop stop-color='%231c1f1e' offset='1'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect fill='url(%23g)' width='800' height='800'/%3E%3C/svg%3E" />
+    </div>
+    <div class="minimal-copy">
+      <div class="minimal-title" data-pg-text="title">如何用纯前端生成一个好看的分享海报</div>
+      <div class="minimal-summary" data-pg-if="summary" data-pg-text="summary | truncate:100">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</div>
+    </div>
+    <div class="minimal-footer">
+      <div class="minimal-brand">
+        <img class="minimal-favicon" data-pg-favicon alt=""
+             src="data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23286d8b'/%3E%3Ctext x='16' y='21' font-size='14' fill='%23fff' text-anchor='middle' font-family='sans-serif'%3E站%3C/text%3E%3C/svg%3E" />
+        <div class="minimal-site-name" data-pg-text="author | default:@siteName">我的博客</div>
+      </div>
+      <div class="minimal-qrcode" data-pg-qr data-pg-qr-size="44"><span style="color:#bbb;font-size:9px;">二维码</span></div>
+    </div>
+  </div>
+
+  <!-- 可选：注册本模板的自定义扩展函数 -->
+  <script>
+    (function () {
+      var name = 'minimal';
+      window.PosterCardTpl = window.PosterCardTpl || {};
+      window.PosterCardTpl[name] = {
+        label: '深色卡片',
+        backgroundColor: '#1c1f1e',
+        helpers: {
+          // 示例扩展函数：首字母大写
+          cap: function (v) { v = String(v == null ? '' : v); return v ? v.charAt(0).toUpperCase() + v.slice(1) : v; }
+        },
+        onRender: null
+      };
+    })();
+  </script>
+</body>
+</html>
