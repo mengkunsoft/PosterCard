@@ -39,7 +39,7 @@
 
 ## 快速开始
 
-在页面中引入样式、依赖与脚本（依赖需自行引入，`postercard.js` 不会自动加载）：
+在页面中引入样式、依赖与脚本：
 
 ```html
 <link rel="stylesheet" href="postercard.css" />
@@ -47,6 +47,20 @@
 <script src="assets/vendor/html2canvas.min.js"></script>
 <script src="assets/vendor/qrcode.min.js"></script>
 <script src="postercard.js"></script>
+```
+
+压缩版（`dist/`）引入方式相同，只是换成 `.min` 文件：
+
+```html
+<!-- 方式一：压缩版（依赖仍需自行引入） -->
+<link rel="stylesheet" href="dist/postercard.min.css" />
+<script src="assets/vendor/html2canvas.min.js"></script>
+<script src="assets/vendor/qrcode.min.js"></script>
+<script src="dist/postercard.min.js"></script>
+
+<!-- 方式二：一体化版 postercard.full.min.js，已内置 html2canvas 与 qrcode，开箱即用 -->
+<link rel="stylesheet" href="dist/postercard.min.css" />
+<script src="dist/postercard.full.min.js"></script>
 ```
 
 调用 `PosterCard.generate(options)`：

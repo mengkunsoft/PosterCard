@@ -9,8 +9,8 @@ const distDir = path.join(root, 'dist');
 // 读取包信息，生成文件头注释（版本 / 作者 / 版权）
 const pkg = JSON.parse(fs.readFileSync(path.join(root, 'package.json'), 'utf8'));
 const year = new Date().getFullYear();
-const author = pkg.author || 'mengkunsoft';
-const banner = `/*! ${pkg.name} v${pkg.version} | (c) ${year} ${author} | MIT License */\n`;
+const author = pkg.author || 'mengkun';
+const banner = `/*! ${pkg.name} v${pkg.version} | (c) ${year} ${author} | MIT License | https://github.com/mengkunsoft/PosterCard */\n`;
 
 function ensureDist() {
   if (!fs.existsSync(distDir)) fs.mkdirSync(distDir, { recursive: true });
