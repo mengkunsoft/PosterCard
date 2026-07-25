@@ -4,8 +4,7 @@ node_modules/
 # npm 锁文件（本项目运行时依赖均已内置，仅构建用；如需 CI 可复现可改为提交）
 package-lock.json
 
-# 构建产物
-dist/
+# 构建产物（dist/ 由 CI 构建后提交回仓库，需纳入版本控制；build/ 为本地临时目录仍忽略）
 build/
 *.log
 
