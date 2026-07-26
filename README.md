@@ -96,6 +96,17 @@ PosterCard.generate({
 
 
 
+## 博客插件（WordPress / emlog）
+
+`plugins/` 目录提供两个现成插件，装上即可在文章页一键生成分享海报，**全部选项可在后台自定义**（版式、宽度、按钮文字、站点名、Logo、品牌描述、默认封面、资源加载方式等）：
+
+- `plugins/wordpress/postercard/` —— WordPress 插件，后台「设置 → PosterCard 海报」
+- `plugins/emlog/postercard/` —— emlog pro 插件，后台插件设置页
+
+安装与说明详见 [plugins/README.md](plugins/README.md)。
+
+
+
 ## 目录结构
 
 ```
@@ -105,6 +116,7 @@ PosterCard/
 ├── postercard.js           # 核心库（UMD，暴露全局 PosterCard）
 ├── postercard.css          # 库自身 UI 样式（弹窗 / 遮罩 / 离屏容器）
 ├── tpl/                    # 模板目录：每个一个文件夹（含 index.html），详见「模板一览」
+├── plugins/                # 博客插件：wordpress/ 与 emlog/（选项可在后台自定义）
 └── assets/
     ├── vendor/
     │   ├── html2canvas.min.js

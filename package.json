@@ -1,6 +1,6 @@
 {
   "name": "postercard",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "通用前端海报/分享卡片生成库：模板化、纯前端，基于 HTML 模板 + 占位符渲染并导出高清 PNG（含二维码）。",
   "main": "postercard.js",
   "files": [
@@ -27,9 +27,12 @@
   },
   "scripts": {
     "build": "node build.js",
+    "build:plugins": "node build-plugins.js",
+    "pack": "npm run build && npm run build:plugins",
     "start": "node serve.js"
   },
   "devDependencies": {
+    "archiver": "^7.0.1",
     "clean-css": "^5.3.3",
     "terser": "^5.31.0"
   }

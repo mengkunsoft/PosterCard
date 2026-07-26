@@ -102,9 +102,9 @@
         <label>摘要 summary</label>
         <textarea id="f-summary">只需传入关键字段与样式参数，库会自动排版封面、二维码与品牌信息，并导出高清 PNG 图片。</textarea>
         <label>封面图 cover（URL）</label>
-        <input id="f-cover" placeholder="https://.../cover.jpg（留空用默认图）" />
+        <input id="f-cover" placeholder="https://.../cover.jpg（留空用默认图）" value="https://picsum.photos/400/300?random" />
         <label>二维码内容 url</label>
-        <input id="f-url" value="https://example.com/article/123" />
+        <input id="f-url" value="https://github.com/mengkunsoft/PosterCard" />
         <div class="row">
           <div>
             <label>站点名 siteName</label>
@@ -118,17 +118,17 @@
         <div class="row">
           <div>
             <label>作者 author（可选）</label>
-            <input id="f-author" placeholder="作者名" />
+            <input id="f-author" placeholder="作者名" value="mengkun" />
           </div>
           <div>
             <label>作者头像（可选）</label>
-            <input id="f-avatar" placeholder="https://.../avatar.png" />
+            <input id="f-avatar" placeholder="https://.../avatar.png" value="https://gravatar.loli.net/avatar/45cd8aefaa3e2b63484992a41c5aa2d61bbf39ea2557b31d6cef3ecf6e6c444a?s=64&r=g" />
           </div>
         </div>
         <label>日期 date（ISO，可选）</label>
         <input id="f-date" value="2026-07-16" />
         <label>底部品牌描述 brandDesc</label>
-        <input id="f-desc" placeholder="记录与分享" />
+        <input id="f-desc" placeholder="记录与分享" value="记录与分享" />
       </div>
 
       <div class="card">
@@ -160,7 +160,7 @@
 
     <!-- 调用代码实时生成 -->
     <div class="card code-card">
-      <h2>调用代码（实时）</h2>
+      <h2>调用代码</h2>
       <textarea id="code-out" readonly spellcheck="false" placeholder="修改上方任意字段/样式参数，这里会实时生成可复制的调用代码"></textarea>
       <div class="actions">
         <button class="ghost" id="btn-copy">复制代码</button>

@@ -8,6 +8,16 @@ package-lock.json
 build/
 *.log
 
+# 插件打包产物：dist/tpl/assets 由 build-plugins.js 复制进插件目录，发布时随 zip 打包，不入库
+# （保留 wordpress 插件的源文件 assets/init.js，仅忽略复制进来的 vendor/ 与占位图）
+plugins/*/postercard/dist/
+plugins/*/postercard/tpl/
+plugins/*/postercard/assets/vendor/
+plugins/*/postercard/assets/postercard.webp
+
+# 插件发布 zip（release 时由 CI 生成并作为 Release 资源）
+releases/
+
 # 操作系统文件
 .DS_Store
 Thumbs.db
