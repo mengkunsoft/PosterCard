@@ -60,3 +60,57 @@ npm run pack        # 1) 构建 dist/  2) 把 dist/ tpl/ assets/ 复制进插件
 `releases/postercard-wordpress.zip`、`releases/postercard-emlog.zip` 即开箱即用的完整插件包，解压后自带全部运行资源，本地模式可直接工作。
 
 > 仓库中插件目录的 `dist/`、`tpl/`、`assets/vendor/`、`assets/postercard.webp` 由打包脚本生成、已加入 `.gitignore`，不入库；仅 WordPress 插件的源文件 `assets/init.js` 入库。
+
+## PJAX / 无刷新主题
+
+pjax 只替换正文容器，`<head>` / footer 里的脚本不会重新执行，所以「按文章在服务端注入一次全局配置」的写法会失效：跳到第二篇文章后，生成的仍是第一篇的标题、封面、二维码和文件名。容器内的脚本若被重复执行，还会造成点击一次生成多张海报。
+
+插件已内置兼容，**大多数 pjax 主题无需任何额外配置**，遵循三条原则：
+
+1. **资源只加载一次、放在 pjax 容器之外**。库脚本（`postercard.full.min.js`）与样式由 WordPress 的 `wp_enqueue_scripts` 输出在 head/footer，天然不会被替换。
+2. **文章数据随按钮一起输出**。自动插入的按钮和短代码按钮都带 `data-postercard`（当前文章的完整配置 JSON），pjax 换掉正文时新按钮自带新数据，不再依赖只注入一次的全局对象。
+3. **`document` 级事件委托且只绑一次**。委托挂在不会被替换的 `document` 上，并用 `__postercardBound` 做幂等；脚本在 `DOMContentLoaded` 之后才被注入也不会漏绑定。
+
+因此**不需要**监听 `pjax:complete` / `pjax:end` 去重新初始化，也不需要重新加载模板（库内部的模板缓存可跨页面复用）。
+
+### 主题里手动放置按钮
+
+不带 `data-postercard` 的手写按钮会回退到整页渲染时注入的全局配置，此时只把二维码链接纠正为当前页地址，**标题、封面等仍是首次加载那篇文章的**。pjax 主题若手动放置按钮，请同时输出配置：
+
+```html
+<button type="button" class="postercard-btn"
+        data-postercard='{"fields":{"title":"文章标题","url":"https://example.com/post/2","cover":"..."},"style":{"template":"default"},"deps":{"templateBase":"/postercard/tpl","assetsBase":"/postercard/assets"}}'>
+  生成分享海报
+</button>
+```
+
+> 配置由服务端按当前文章生成，用 `json_encode(..., JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT)` 再用 `esc_attr` / `htmlspecialchars` 转义后写入属性。
+
+### emlog 主题的额外注意
+
+emlog 插件的资源标签和初始化脚本都输出在 `log_related` 挂载点（正文容器内）。若主题的 pjax **不执行**容器内脚本，从首页无刷新进入文章页时按钮会没有反应，按下面任一方式处理：
+
+- 把下面两个标签移到主题的 `head` / footer（pjax 容器之外），全站加载一次：
+
+  ```html
+  <link rel="stylesheet" href="/content/plugins/postercard/dist/postercard.min.css">
+  <script src="/content/plugins/postercard/dist/postercard.full.min.js"></script>
+  ```
+
+- 或在 pjax 完成回调里调用幂等的初始化函数（重复调用无副作用）：
+
+  ```js
+  $(document).on('pjax:complete', function () {
+    if (window.PosterCardEMInit) window.PosterCardEMInit();
+  });
+  ```
+
+  若 `PosterCardEMInit` 不存在（连内联脚本都没执行过），说明主题把正文里的 `<script>` 一起丢弃了，此时需采用上一种方式，并在主题 footer 自行注册 click 委托或改用手动按钮。
+
+另外，点击时若检测到 `window.PosterCard` 未定义，插件会按需动态补加载一次库脚本，覆盖「pjax 执行了内联脚本但没执行 `<script src>`」的情况。
+
+### 自己写调用代码时
+
+- `fields.url` 不传即可，库会取 `location.href`；pjax 的 `pushState` 会同步更新它。
+- 不要把 `PosterCard.generate(options)` 的 `options` 在页面初始化时缓存成一个固定对象；应在点击时按当前文章重新构造。
+- 弹窗、遮罩、加载层由库挂在 `document.body` 上并按类名复用；即使某主题整体替换了 `body` 内容，再次生成时会自动重建，全局 `keydown` / `resize` 监听也只注册一次。

@@ -182,34 +182,74 @@ function postercard_em_show_button($logData)
     $configJson = json_encode($config, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
 
     // 资源：full 版已内置 html2canvas 与 qrcode.js
-    echo '<link rel="stylesheet" href="' . htmlspecialchars($base, ENT_QUOTES) . '/dist/postercard.min.css?v=' . POSTERCARD_EM_VERSION . '">' . "\n";
-    echo '<script src="' . htmlspecialchars($base, ENT_QUOTES) . '/dist/postercard.full.min.js?v=' . POSTERCARD_EM_VERSION . '"></script>' . "\n";
+    // 这两个标签输出在 log_related（正文容器内）。PJAX 主题建议把它们移到
+    // 主题的 head/footer（pjax 容器之外），保证整站只加载一次。
+    echo '<link id="postercard-css" rel="stylesheet" href="' . htmlspecialchars($base, ENT_QUOTES) . '/dist/postercard.min.css?v=' . POSTERCARD_EM_VERSION . '">' . "\n";
+    echo '<script id="postercard-lib" src="' . htmlspecialchars($base, ENT_QUOTES) . '/dist/postercard.full.min.js?v=' . POSTERCARD_EM_VERSION . '"></script>' . "\n";
 
+    // 配置随按钮输出：pjax 替换正文后，新按钮自带新文章的数据。
+    $btnData = ' data-postercard="' . htmlspecialchars($configJson, ENT_QUOTES) . '"';
     if (intval($cfg['auto_insert']) === 1) {
         echo '<p class="postercard-btn-wrap" style="margin-top:16px;">'
-            . '<button type="button" class="postercard-btn" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:1px solid #d0d5da;border-radius:8px;background:#fff;color:#333;font-size:14px;cursor:pointer;">'
+            . '<button type="button" class="postercard-btn"' . $btnData . ' style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:1px solid #d0d5da;border-radius:8px;background:#fff;color:#333;font-size:14px;cursor:pointer;">'
             . '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
             . htmlspecialchars($cfg['button_text'], ENT_QUOTES) . '</button></p>' . "\n";
     }
 
-    echo '<script>' . "\n"
-        . 'window.PosterCardEM = ' . $configJson . ";\n"
-        . '(function(){' . "\n"
-        . '  document.addEventListener("click", function (e) {' . "\n"
-        . '    var btn = e.target.closest ? e.target.closest(".postercard-btn") : null;' . "\n"
-        . '    if (!btn) return;' . "\n"
-        . '    if (typeof window.PosterCard === "undefined") { console.warn("[PosterCard] 库未加载"); return; }' . "\n"
-        . '    e.preventDefault();' . "\n"
-        . '    if (btn.getAttribute("data-pc-busy") === "1") return;' . "\n"
-        . '    btn.setAttribute("data-pc-busy", "1");' . "\n"
-        . '    var done = function () { btn.removeAttribute("data-pc-busy"); };' . "\n"
-        . '    var p = window.PosterCard.generate(window.PosterCardEM);' . "\n"
-        . '    if (p && typeof p.finally === "function") p.finally(done);' . "\n"
-        . '    else if (p && typeof p.then === "function") p.then(done, done);' . "\n"
-        . '    else done();' . "\n"
-        . '  });' . "\n"
-        . '})();' . "\n"
-        . '</script>' . "\n";
+    $libUrl = htmlspecialchars($base, ENT_QUOTES) . '/dist/postercard.full.min.js?v=' . POSTERCARD_EM_VERSION;
+    // 幂等初始化：pjax 重复执行本段脚本时不会重复绑定 click（否则点一次生成多张海报）。
+    // 主题也可在 pjax 完成回调里主动调用 window.PosterCardEMInit()。
+    echo <<<PCJS
+<script>
+window.PosterCardEM = {$configJson};
+window.PosterCardEMInit = function () {
+  if (window.__postercardBound) return;
+  window.__postercardBound = true;
+  document.addEventListener('click', function (e) {
+    var btn = e.target && e.target.closest ? e.target.closest('.postercard-btn') : null;
+    if (!btn) return;
+    e.preventDefault();
+    if (btn.getAttribute('data-pc-busy') === '1') return;
+    var cfg = window.PosterCardEM;
+    var raw = btn.getAttribute('data-postercard');
+    if (raw) { try { cfg = JSON.parse(raw); } catch (err) {} }
+    else if (cfg && cfg.fields) {
+      var copy = {}, f = {}, k;
+      for (k in cfg) if (Object.prototype.hasOwnProperty.call(cfg, k)) copy[k] = cfg[k];
+      for (k in cfg.fields) if (Object.prototype.hasOwnProperty.call(cfg.fields, k)) f[k] = cfg.fields[k];
+      f.url = window.location.href;
+      copy.fields = f;
+      cfg = copy;
+    }
+    if (!cfg) { console.warn('[PosterCard] 配置未加载'); return; }
+    btn.setAttribute('data-pc-busy', '1');
+    var done = function () { btn.removeAttribute('data-pc-busy'); };
+    var run = function () {
+      if (typeof window.PosterCard === 'undefined') { console.warn('[PosterCard] 库未加载'); done(); return; }
+      var p = window.PosterCard.generate(cfg);
+      if (p && typeof p.finally === 'function') p.finally(done);
+      else if (p && typeof p.then === 'function') p.then(done, done);
+      else done();
+    };
+    if (typeof window.PosterCard !== 'undefined') { run(); return; }
+    // pjax 从非文章页进入时，正文里的 <script src> 可能未被执行，这里按需补加载一次
+    var s = document.getElementById('postercard-lib-dynamic');
+    if (!s) {
+      s = document.createElement('script');
+      s.id = 'postercard-lib-dynamic';
+      s.src = '{$libUrl}';
+      s.onload = run;
+      s.onerror = done;
+      document.head.appendChild(s);
+    } else {
+      s.addEventListener('load', run, { once: true });
+    }
+  });
+};
+window.PosterCardEMInit();
+</script>
+PCJS;
+    echo "\n";
 }
 
 addAction('log_related', 'postercard_em_show_button');

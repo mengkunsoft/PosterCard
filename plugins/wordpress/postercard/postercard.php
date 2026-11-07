@@ -239,23 +239,14 @@ function postercard_first_image_in_content($content)
     return '';
 }
 
-add_action('wp_enqueue_scripts', function () {
-    if (!is_singular()) {
-        return;
-    }
-    $o    = postercard_get_options();
-    $base = postercard_asset_base($o);
-
-    wp_enqueue_style('postercard', $base . '/dist/postercard.min.css', array(), POSTERCARD_WP_VERSION);
-    // full 版已内置 html2canvas 与 qrcode.js
-    wp_enqueue_script('postercard', $base . '/dist/postercard.full.min.js', array(), POSTERCARD_WP_VERSION, true);
-    wp_enqueue_script('postercard-init', plugins_url('assets/init.js', __FILE__), array('postercard'), POSTERCARD_WP_VERSION, true);
-
-    $post = get_queried_object();
-    if (!$post instanceof WP_Post) {
-        return;
-    }
-
+/**
+ * 构造单篇文章的海报配置。
+ * 抽成独立函数是为了让按钮也能自带同样的配置（PJAX 兼容）：
+ * 局部刷新只会替换正文，不会重新执行 head/footer 里的脚本，
+ * 因此每篇文章的数据必须随按钮 HTML 一起输出。
+ */
+function postercard_build_config($post, $o, $base)
+{
     $cover = get_the_post_thumbnail_url($post, 'large');
     if (!$cover) {
         $cover = postercard_first_image_in_content($post->post_content);
@@ -266,7 +257,7 @@ add_action('wp_enqueue_scripts', function () {
         $summary = mb_substr($summary, 0, $o['summary_len']) . '…';
     }
 
-    $config = array(
+    return array(
         'fields' => array(
             'title'        => get_the_title($post),
             'summary'      => $summary,
@@ -293,7 +284,28 @@ add_action('wp_enqueue_scripts', function () {
             'assetsBase'   => $base . '/assets',
         ),
     );
-    wp_localize_script('postercard-init', 'PosterCardWP', $config);
+}
+
+add_action('wp_enqueue_scripts', function () {
+    if (!is_singular()) {
+        return;
+    }
+    $o    = postercard_get_options();
+    $base = postercard_asset_base($o);
+
+    wp_enqueue_style('postercard', $base . '/dist/postercard.min.css', array(), POSTERCARD_WP_VERSION);
+    // full 版已内置 html2canvas 与 qrcode.js
+    wp_enqueue_script('postercard', $base . '/dist/postercard.full.min.js', array(), POSTERCARD_WP_VERSION, true);
+    wp_enqueue_script('postercard-init', plugins_url('assets/init.js', __FILE__), array('postercard'), POSTERCARD_WP_VERSION, true);
+
+    $post = get_queried_object();
+    if (!$post instanceof WP_Post) {
+        return;
+    }
+
+    // 全局配置仅作为「主题手写按钮」等无 data-postercard 场景的回退；
+    // pjax 局部刷新后它仍是首篇文章的数据，故按钮优先使用自身携带的配置。
+    wp_localize_script('postercard-init', 'PosterCardWP', postercard_build_config($post, $o, $base));
 });
 
 /* ------------------------------------------------------------------ */
@@ -305,7 +317,19 @@ function postercard_button_html($text = '')
     if ($text === '') {
         $text = $o['button_text'];
     }
-    return '<button type="button" class="postercard-btn" style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:1px solid #d0d5da;border-radius:8px;background:#fff;color:#333;font-size:14px;cursor:pointer;">'
+    // 配置随按钮输出：pjax 替换正文时新按钮自带新文章数据，无需重新初始化脚本。
+    $data = '';
+    $post = get_queried_object();
+    if ($post instanceof WP_Post) {
+        $json = wp_json_encode(
+            postercard_build_config($post, $o, postercard_asset_base($o)),
+            JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+        );
+        if ($json) {
+            $data = ' data-postercard="' . esc_attr($json) . '"';
+        }
+    }
+    return '<button type="button" class="postercard-btn"' . $data . ' style="display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border:1px solid #d0d5da;border-radius:8px;background:#fff;color:#333;font-size:14px;cursor:pointer;">'
         . '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m21 15-5-5L5 21"/></svg>'
         . esc_html($text) . '</button>';
 }

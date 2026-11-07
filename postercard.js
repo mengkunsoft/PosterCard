@@ -120,7 +120,26 @@
     if (meta) meta.textContent = (label || styleName || '默认样式') + ' · ' + naturalWidth + ' × ' + naturalHeight;
   }
 
+  // 全局监听只注册一次：pjax 主题可能整体替换 body 内容，弹窗 DOM 会被移除再由
+  // ensureModalScaffold 重新创建；若每次创建都注册一次，会不断累积僵尸监听器。
+  function ensureGlobalListeners() {
+    if (ensureGlobalListeners._bound) return;
+    ensureGlobalListeners._bound = true;
+    document.addEventListener('keydown', function (event) {
+      if (event.key !== 'Escape') return;
+      var backdrop = $('.pg-modal-backdrop');
+      if (backdrop && backdrop.style.display === 'flex') backdrop.style.display = 'none';
+    });
+    window.addEventListener('resize', function () {
+      var backdrop = $('.pg-modal-backdrop');
+      if (backdrop && backdrop.style.display === 'flex' && typeof backdrop._pgFit === 'function') {
+        backdrop._pgFit();
+      }
+    });
+  }
+
   function ensureModalScaffold() {
+    ensureGlobalListeners();
     var backdrop = $('.pg-modal-backdrop');
     if (backdrop) return backdrop;
     backdrop = createEl('div', 'pg-modal-backdrop');
@@ -174,14 +193,6 @@
 
     backdrop.addEventListener('click', function (event) {
       if (event.target === backdrop) closePreview();
-    });
-    document.addEventListener('keydown', function (event) {
-      if (event.key === 'Escape' && backdrop.style.display === 'flex') closePreview();
-    });
-    window.addEventListener('resize', function () {
-      if (backdrop.style.display === 'flex' && typeof backdrop._pgFit === 'function') {
-        backdrop._pgFit();
-      }
     });
     return backdrop;
   }

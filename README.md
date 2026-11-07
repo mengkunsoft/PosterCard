@@ -264,3 +264,4 @@ npm start          # 启动 Node 静态服务（默认 http://localhost:8080/）
 
 - 跨域图片需服务端允许 CORS，否则 html2canvas 无法绘制（库已自动设置 `crossOrigin`）。
 - 生成的图片为 PNG，分辨率按设备像素比与像素预算自动优化，兼顾清晰度与性能。
+- **PJAX / 无刷新主题**：库脚本要放在 pjax 容器之外、只加载一次；文章数据不要只依赖整页渲染时注入的全局变量，应随按钮（`data-*`）或正文一起输出；点击用 `document` 级事件委托且只绑定一次。不传 `fields.url` 时库会取 `location.href`，而 pjax 的 `pushState` 会更新它，因此适合无刷新跳转。插件已按此实现，详见 [plugins/README.md](plugins/README.md)。
