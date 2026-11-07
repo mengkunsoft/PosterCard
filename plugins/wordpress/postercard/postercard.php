@@ -252,7 +252,22 @@ function postercard_build_config($post, $o, $base)
         $cover = postercard_first_image_in_content($post->post_content);
     }
 
-    $summary = wp_strip_all_tags(get_the_excerpt($post));
+    // 摘要必须直接由 $post 生成，绝不能调用 get_the_excerpt()：
+    // 文章没有手动摘要时 wp_trim_excerpt() 内部会 apply_filters('the_content')，
+    // 而本插件的按钮正挂在 the_content 上，会形成无限递归直至 PHP 内存耗尽。
+    // 直接用 post 字段还有个好处：不会把自动插入的按钮文字带进摘要。
+    $raw = trim((string) $post->post_excerpt);
+    if ($raw === '') {
+        $raw = (string) $post->post_content;
+    }
+    if (function_exists('strip_shortcodes')) {
+        $raw = strip_shortcodes($raw);
+    }
+    if (function_exists('excerpt_remove_blocks')) {
+        $raw = excerpt_remove_blocks($raw);
+    }
+    $summary = wp_strip_all_tags($raw);
+    $summary = trim(preg_replace('/\s+/', ' ', $summary));
     if ($o['summary_len'] > 0 && function_exists('mb_substr') && mb_strlen($summary) > $o['summary_len']) {
         $summary = mb_substr($summary, 0, $o['summary_len']) . '…';
     }
@@ -335,11 +350,19 @@ function postercard_button_html($text = '')
 }
 
 add_filter('the_content', function ($content) {
+    // 防御性重入保护：任何第三方代码若在摘要/正文处理中再次触发 the_content，
+    // 也不能让按钮插入逻辑无限套娃。
+    static $running = false;
     $o = postercard_get_options();
-    if (!$o['auto_insert'] || !is_singular() || !in_the_loop() || !is_main_query()) {
+    if ($running || !$o['auto_insert'] || !is_singular() || !in_the_loop() || !is_main_query()) {
         return $content;
     }
-    return $content . '<p class="postercard-btn-wrap" style="margin-top:16px;">' . postercard_button_html() . '</p>';
+    $running = true;
+    try {
+        return $content . '<p class="postercard-btn-wrap" style="margin-top:16px;">' . postercard_button_html() . '</p>';
+    } finally {
+        $running = false;
+    }
 });
 
 add_shortcode('postercard', function ($atts) {
