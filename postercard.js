@@ -244,6 +244,60 @@
     return Promise.all(tasks);
   }
 
+  // html2canvas 1.4.1 未实现 CSS object-fit：截图时会把 <img> 的源图直接拉伸到元素框，
+  // 使所有以 object-fit: cover 展示的封面（default/nicetheme/netease/minimal/newspaper 等）变形。
+  // 导出前按元素实际显示框做一次等比裁剪并写回 src，之后拉伸绘制就等价于浏览器里的 cover 效果。
+  var MAX_COVER_CROP_EDGE = 2400;
+
+  function objectPositionOffset(value, free) {
+    if (value === 'left' || value === 'top') return 0;
+    if (value === 'right' || value === 'bottom') return free;
+    var n = parseFloat(value);
+    if (!isFinite(n)) return free / 2;
+    if (/%$/.test(value)) return free * (n / 100);
+    return n; // px
+  }
+
+  function cropCoverToDataUrl(img, boxW, boxH, position) {
+    var nw = img.naturalWidth, nh = img.naturalHeight;
+    var scale = Math.max(boxW / nw, boxH / nh);
+    var sw = Math.min(nw, boxW / scale), sh = Math.min(nh, boxH / scale);
+    var parts = String(position || '50% 50%').trim().split(/\s+/);
+    var sx = Math.max(0, Math.min(nw - sw, objectPositionOffset(parts[0], nw - sw)));
+    var sy = Math.max(0, Math.min(nh - sh, objectPositionOffset(parts[1], nh - sh)));
+    // 输出按裁剪区域的原始像素（长边上限 2400），既不无谓放大，也保持高清导出
+    var ratio = Math.min(1, MAX_COVER_CROP_EDGE / Math.max(sw, sh));
+    var cv = document.createElement('canvas');
+    cv.width = Math.max(1, Math.round(sw * ratio));
+    cv.height = Math.max(1, Math.round(sh * ratio));
+    var ctx = cv.getContext('2d');
+    if (!ctx) return '';
+    ctx.drawImage(img, sx, sy, sw, sh, 0, 0, cv.width, cv.height);
+    return cv.toDataURL('image/png');
+  }
+
+  function normalizeObjectFitCovers(root) {
+    if (!root || typeof window.getComputedStyle === 'undefined') return Promise.resolve();
+    var tasks = [];
+    Array.prototype.forEach.call(root.querySelectorAll('img'), function (img) {
+      var cs, boxW, boxH;
+      try { cs = window.getComputedStyle(img); } catch (_) { return; }
+      if (!cs || cs.objectFit !== 'cover') return;
+      boxW = img.clientWidth;
+      boxH = img.clientHeight;
+      if (!(boxW > 1) || !(boxH > 1) || !img.complete || !img.naturalWidth || !img.naturalHeight) return;
+      tasks.push(new Promise(function (resolve) {
+        var url = '';
+        try { url = cropCoverToDataUrl(img, boxW, boxH, cs.objectPosition); } catch (_) { }
+        // 跨域图无法读取像素（canvas 被污染）时保留原图，不阻断导出
+        if (!url) return resolve();
+        img.src = url;
+        waitForImage(img, 8000).then(resolve);
+      }));
+    });
+    return Promise.all(tasks);
+  }
+
   // html2canvas 不识别 CSS aspect-ratio，会把这些元素重排塌陷为 ~0 高度，
   // 造成生成图整体偏矮、底部被截断。这里把浏览器已算好的确定高度写死成内联样式，
   // 让 html2canvas 能按正确高度截图。已在模板中使用的有 default/dwqr*/minimal/netease/nicetheme 等。
@@ -893,6 +947,9 @@
       return Promise.resolve(dom.ready).then(function () {
         // 等待所有图片（封面/头像/logo 等）真正布局完成，避免根节点高度偏小导致底部被截断
         return waitForImages(dom.root, 8000).then(function () {
+          // html2canvas 不识别 object-fit：先按显示框等比裁剪 cover 图，避免导出封面被拉伸变形
+          return normalizeObjectFitCovers(dom.root);
+        }).then(function () {
           // 写死 aspect-ratio 元素的确定高度，避免 html2canvas 重排塌陷（部分主题底部被截断）
           freezeAspectRatioHeights(dom.root);
 
