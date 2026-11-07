@@ -4,7 +4,7 @@ Tags: poster, share, qrcode, share-card
 Requires at least: 5.0
 Tested up to: 6.7
 Requires PHP: 7.0
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: MIT
 
 基于 PosterCard 前端海报库，一键为文章生成精美分享海报（PNG，含二维码）。
@@ -23,6 +23,11 @@ License: MIT
 3. 到「设置 → PosterCard 海报」按需配置
 
 == Changelog ==
+
+= 1.2.0 =
+* 新增：兼容 pjax 无刷新主题
+* 修复：WordPress 插件无限递归的问题
+* 修复：封面图（cover）被拉伸的问题
 
 = 1.1.0 =
 * 新增后台「资源加载方式」下拉：本地（插件自带资源，默认）/ jsDelivr CDN / 自定义地址

@@ -3,7 +3,7 @@
  * Plugin Name: PosterCard 文章分享海报
  * Plugin URI:  https://github.com/mengkunsoft/PosterCard
  * Description: 基于 PosterCard 前端海报库，一键为文章生成精美分享海报（PNG，含二维码）。支持 16 种版式，选项可在后台自定义。
- * Version:     1.1.0
+ * Version:     1.2.0
  * Author:      mengkunsoft
  * Author URI:  https://github.com/mengkunsoft
  * License:     MIT
@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('POSTERCARD_WP_VERSION', '1.1.0');
+define('POSTERCARD_WP_VERSION', '1.2.0');
 define('POSTERCARD_DEFAULT_ASSET_BASE', 'https://cdn.jsdelivr.net/gh/mengkunsoft/PosterCard@master');
 
 /* ------------------------------------------------------------------ */
